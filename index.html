@@ -81,6 +81,14 @@
       color: #718096;
       cursor: not-allowed;
     }
+    .form-group input[readonly]::placeholder {
+      color: #cbd5e0;
+      font-style: italic;
+    }
+    .form-group input[readonly].error {
+      background: #fff5f5;
+      color: #e53e3e;
+    }
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -219,7 +227,7 @@
 
           <div class="form-group">
             <label>รหัสสมาชิก <span class="req">*</span></label>
-            <input type="text" id="memberId" maxlength="8" placeholder="เช่น 64070491" required>
+            <input type="text" id="memberId" maxlength="8" placeholder="เช่น 6006083 หรือ 64070491" required>
             <div class="help-text">กรอกรหัส 8 หลัก ระบบจะดึงชื่อและ BU อัตโนมัติ</div>
             <div class="error-msg" id="memberIdError">ไม่พบรหัสสมาชิกนี้ในระบบ</div>
           </div>
@@ -331,6 +339,7 @@
   <script>
     // ===== Mock data (Phase 1 only — Phase 2 จะดึงจาก GAS) =====
     const MOCK_MEMBERS = {
+      '60060832': { name: 'ทดสอบ สมาชิก', bu: '21RTG' },
       '64070491': { name: 'ปวีร์ ผ่องโสภา', bu: '21RTG' },
       '64070472': { name: 'ปภาวี ผ่องโสภา', bu: '21RTG' },
       '64070482': { name: 'นันท์นลิน โพธิ์นทีไท', bu: '21RTG' },
@@ -341,6 +350,18 @@
 
     // ===== Auto-fill member =====
     let lookupTimer = null;
+    function lookupMember(id) {
+      // Exact match first
+      if (MOCK_MEMBERS[id]) return MOCK_MEMBERS[id];
+      // Prefix match: ถ้ากรอก >= 7 หลัก ลองหา mock ที่ขึ้นต้นด้วย id นี้
+      if (id.length >= 7) {
+        for (const key of Object.keys(MOCK_MEMBERS)) {
+          if (key.startsWith(id)) return MOCK_MEMBERS[key];
+        }
+      }
+      return null;
+    }
+
     document.getElementById('memberId').addEventListener('input', (e) => {
       clearTimeout(lookupTimer);
       const id = e.target.value.trim();
@@ -350,27 +371,38 @@
 
       if (id.length === 0) {
         nameEl.value = '';
+        nameEl.placeholder = '— รอกรอกรหัส —';
         buEl.value = '';
+        buEl.placeholder = '—';
         errorEl.classList.remove('show');
         return;
       }
 
-      if (id.length < 8) return; // รอให้ครบ 8 หลัก
+      if (id.length < 7) {
+        // ยังกรอกไม่ครบ — รอ
+        return;
+      }
 
       lookupTimer = setTimeout(() => {
-        // Phase 1: mock lookup
-        // Phase 2: replace with GAS call
-        const member = MOCK_MEMBERS[id];
+        const member = lookupMember(id);
         if (member) {
           nameEl.value = member.name;
           buEl.value = member.bu;
+          nameEl.placeholder = '';
+          buEl.placeholder = '';
+          nameEl.classList.remove('error');
+          buEl.classList.remove('error');
           errorEl.classList.remove('show');
         } else {
           nameEl.value = '';
           buEl.value = '';
+          nameEl.placeholder = '— ไม่พบข้อมูล —';
+          buEl.placeholder = '—';
+          nameEl.classList.add('error');
+          buEl.classList.add('error');
           errorEl.classList.add('show');
         }
-      }, 500);
+      }, 300);
     });
 
     // ===== Validate rank (ไม่ซ้ำกัน) =====
@@ -475,7 +507,11 @@
       setTimeout(() => {
         document.getElementById('motivationForm').reset();
         document.getElementById('memberName').value = '';
+        document.getElementById('memberName').placeholder = '— รอกรอกรหัส —';
+        document.getElementById('memberName').classList.remove('error');
         document.getElementById('memberBU').value = '';
+        document.getElementById('memberBU').placeholder = '—';
+        document.getElementById('memberBU').classList.remove('error');
         submitBtn.disabled = false;
         submitBtn.innerHTML = 'ส่งข้อมูล';
         setTimeout(() => {
