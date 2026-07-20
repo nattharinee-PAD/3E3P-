@@ -267,8 +267,8 @@
             สถานะ / หลักสูตรที่อบรม ของคุณ
           </div>
           <div class="form-group">
-            <label>สถานะ <span class="req">*</span></label>
-            <select id="status" required>
+            <label>สถานะ</label>
+            <select id="status">
               <option value="">— เลือกสถานะ —</option>
               <option value="สมาชิกกรายวัน">สมาชิกกรายวัน</option>
               <option value="สมาชิกสัญญาจ้าง 1 เดือน">สมาชิกสัญญาจ้าง 1 เดือน</option>
@@ -282,8 +282,8 @@
             </select>
           </div>
           <div class="form-group">
-            <label>หลักสูตรที่อบรม <span class="req">*</span></label>
-            <select id="course" required onchange="toggleOtherCourse()">
+            <label>หลักสูตรที่อบรม</label>
+            <select id="course" onchange="toggleOtherCourse()">
               <option value="">— เลือกหลักสูตร —</option>
               <option value="ปฐมนิเทศ Mini">หลักสูตร ปฐมนิเทศ Mini</option>
               <option value="ทุติยนิเทศ">หลักสูตร ทุติยนิเทศ</option>
@@ -1031,8 +1031,10 @@
         document.getElementById('memberId').focus();
         return;
       }
-      if (!status) { alert('กรุณาเลือกสถานะ'); return; }
-      if (!course) { alert('กรุณาเลือกหลักสูตรที่อบรม'); return; }
+      if (!status && !course) {
+        alert('กรุณาเลือกอย่างน้อย 1 อย่าง (สถานะ หรือ หลักสูตรที่อบรม)');
+        return;
+      }
       if (course === 'อื่นๆ' && !otherCourse) {
         alert('กรุณาระบุชื่อหลักสูตรอื่นๆ');
         return;
