@@ -8,24 +8,35 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Sarabun', 'Tahoma', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #f5f5f7;
       min-height: 100vh;
       padding: 20px;
-      color: #333;
+      color: #2d2d2d;
     }
     .container {
       max-width: 720px;
       margin: 0 auto;
       background: white;
       border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
       overflow: hidden;
+      border-top: 6px solid;
+      border-image: linear-gradient(to right,
+        #e40303 0%, #e40303 16.66%,
+        #ff8c00 16.66%, #ff8c00 33.33%,
+        #ffed00 33.33%, #ffed00 50%,
+        #008018 50%, #008018 66.66%,
+        #0066ff 66.66%, #0066ff 83.33%,
+        #732982 83.33%, #732982 100%) 1;
     }
     .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg,
+        #e40303 0%, #ff8c00 20%, #ffed00 40%,
+        #008018 60%, #0066ff 80%, #732982 100%);
       color: white;
       padding: 32px 24px;
       text-align: center;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
     }
     .header h1 { font-size: 28px; margin-bottom: 8px; }
     .header p { font-size: 14px; opacity: 0.9; }
@@ -43,11 +54,12 @@
       gap: 8px;
     }
     .section-title .badge {
-      background: #667eea;
+      background: linear-gradient(135deg, #e40303 0%, #ff8c00 50%, #ffed00 100%);
       color: white;
       font-size: 12px;
       padding: 2px 10px;
       border-radius: 12px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
     }
     .form-group { margin-bottom: 16px; }
     .form-group label {
@@ -73,8 +85,8 @@
     .form-group select:focus,
     .form-group textarea:focus {
       outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+      border-color: #0066ff;
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
     }
     .form-group input[readonly] {
       background: #f7fafc;
@@ -138,7 +150,7 @@
     }
     .rank-row .rank-label {
       font-weight: 600;
-      color: #667eea;
+      color: #e40303;
       font-size: 16px;
     }
     .error-msg {
@@ -154,15 +166,18 @@
       font-size: 16px;
       font-weight: 600;
       color: white;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg,
+        #e40303 0%, #ff8c00 20%, #ffed00 40%,
+        #008018 60%, #0066ff 80%, #732982 100%);
       border: none;
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
     }
     .submit-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(102,126,234,0.3);
+      box-shadow: 0 10px 24px rgba(115, 41, 130, 0.4);
     }
     .submit-btn:disabled {
       opacity: 0.5;
@@ -171,7 +186,7 @@
     }
     .success-msg {
       display: none;
-      background: #c6f6d5;
+      background: linear-gradient(135deg, #c6f6d5 0%, #bee3f8 100%);
       color: #22543d;
       padding: 16px;
       border-radius: 8px;
@@ -877,6 +892,102 @@
           errorEl.classList.add('show');
         }
       }, 300);
+    });
+
+    // ===== Validate rank (ไม่ซ้ำกัน) =====
+    function validateRank() {
+      const rank1 = document.getElementById('rank1').value;
+      const rank2 = document.getElementById('rank2').value;
+      const errorEl = document.getElementById('rankError');
+      if (rank1 && rank2 && rank1 === rank2) {
+        errorEl.classList.add('show');
+        return false;
+      }
+      if (rank1 && rank2 && rank1 !== rank2) {
+        errorEl.classList.remove('show');
+        return true;
+      }
+      return false;
+    }
+    document.getElementById('rank1').addEventListener('change', validateRank);
+    document.getElementById('rank2').addEventListener('change', validateRank);
+
+    // ===== Submit =====
+    document.getElementById('motivationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submitBtn');
+
+      const memberId = document.getElementById('memberId').value.trim();
+      const memberName = document.getElementById('memberName').value.trim();
+      const memberBU = document.getElementById('memberBU').value.trim();
+      const status = document.getElementById('status').value;
+      const initialChecked = Array.from(document.querySelectorAll('input[name="motivation_initial"]:checked')).map(c => c.value);
+      const rank1 = document.getElementById('rank1').value;
+      const rank2 = document.getElementById('rank2').value;
+      const detail = document.getElementById('detail').value.trim();
+
+      // Member lookup
+      if (!memberName) {
+        document.getElementById('memberIdError').classList.add('show');
+        document.getElementById('memberId').focus();
+        return;
+      }
+      if (!status) { alert('กรุณาเลือกสถานะ'); return; }
+      if (initialChecked.length === 0) {
+        document.getElementById('initError').classList.add('show');
+        return;
+      } else {
+        document.getElementById('initError').classList.remove('show');
+      }
+      if (!rank1 || !rank2) {
+        const errEl = document.getElementById('rankError');
+        errEl.textContent = 'กรุณาเลือกให้ครบทั้ง 2 อันดับ';
+        errEl.classList.add('show');
+        return;
+      }
+      if (rank1 === rank2) {
+        const errEl = document.getElementById('rankError');
+        errEl.textContent = 'อันดับ 1 และ 2 ต้องไม่ซ้ำกัน';
+        errEl.classList.add('show');
+        return;
+      }
+
+      const payload = {
+        submission_id: 'sub_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        timestamp: new Date().toISOString(),
+        member_id: memberId,
+        member_name: memberName,
+        bu: memberBU,
+        status: status,
+        motivation_initial: initialChecked,
+        motivation_current: { rank1: rank1, rank2: rank2 },
+        motivation_detail: detail,
+        source: '3E3P_Form'
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="loading"></span>กำลังส่งข้อมูล...';
+
+      console.log('📤 Submit payload:', payload);
+      await new Promise(r => setTimeout(r, 1000));
+
+      document.getElementById('successMsg').classList.add('show');
+      document.getElementById('successMsg').scrollIntoView({ behavior: 'smooth' });
+
+      setTimeout(() => {
+        document.getElementById('motivationForm').reset();
+        document.getElementById('memberName').value = '';
+        document.getElementById('memberName').placeholder = '— รอกรอกรหัส —';
+        document.getElementById('memberName').classList.remove('error');
+        document.getElementById('memberBU').value = '';
+        document.getElementById('memberBU').placeholder = '—';
+        document.getElementById('memberBU').classList.remove('error');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '🏳️‍🌈 ส่งข้อมูล';
+        setTimeout(() => {
+          document.getElementById('successMsg').classList.remove('show');
+        }, 3000);
+      }, 2000);
     });
   </script>
 </body>
