@@ -987,21 +987,42 @@
       otherGroup.style.display = course === 'อื่นๆ' ? 'block' : 'none';
     }
 
-    // ===== Validate rank 1-6 (ไม่ซ้ำกัน) =====
+    // ===== Validate rank 1-6 (real-time disable + ไม่ซ้ำกัน) =====
     function validateRank() {
-      const ranks = [];
-      for (let i = 1; i <= 6; i++) {
-        const v = document.getElementById('rank' + i).value;
-        if (v) ranks.push(v);
-      }
       const errorEl = document.getElementById('rankError');
-      const allFilled = ranks.length === 6;
-      const allUnique = new Set(ranks).size === ranks.length;
+      // Get current values
+      const selected = {};
+      for (let i = 1; i <= 6; i++) {
+        const sel = document.getElementById('rank' + i);
+        selected['rank' + i] = sel.value;
+      }
+      const rankVals = Object.values(selected);
+      const allFilled = rankVals.every(v => v);
+      const allUnique = new Set(rankVals).size === rankVals.length;
       if (allFilled && allUnique) {
         errorEl.classList.remove('show');
-        return true;
       }
-      return false;
+      // Real-time: disable options that are already selected in other dropdowns
+      for (let i = 1; i <= 6; i++) {
+        const sel = document.getElementById('rank' + i);
+        const myVal = sel.value;
+        const usedInOthers = new Set();
+        for (let j = 1; j <= 6; j++) {
+          if (j === i) continue;
+          const v = selected['rank' + j];
+          if (v) usedInOthers.add(v);
+        }
+        // Re-enable all options first
+        Array.from(sel.options).forEach(opt => {
+          if (opt.value === '') return; // skip placeholder
+          if (opt.value === myVal) {
+            opt.disabled = false; // own value always enabled
+          } else {
+            opt.disabled = usedInOthers.has(opt.value);
+          }
+        });
+      }
+      return allFilled && allUnique;
     }
     for (let i = 1; i <= 6; i++) {
       document.getElementById('rank' + i).addEventListener('change', validateRank);
