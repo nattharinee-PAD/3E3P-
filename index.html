@@ -345,7 +345,7 @@
           <div class="help-text" style="margin-bottom: 12px;">เรียงลำดับจากมากไปหาน้อย (อันดับ 1 = มากที่สุด) · เลือกให้ครบทั้ง 6 อันดับ</div>
           <div id="rankContainer">
             <div class="rank-row">
-              <div class="rank-label">อันดับ 1</div>
+              <div class="rank-label">อันดับ 1 <span class="req">*</span></div>
               <select id="rank1" class="rank-select" required>
                 <option value="">— เลือก —</option>
                 <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
@@ -357,7 +357,7 @@
               </select>
             </div>
             <div class="rank-row">
-              <div class="rank-label">อันดับ 2</div>
+              <div class="rank-label">อันดับ 2 <span class="req">*</span></div>
               <select id="rank2" class="rank-select" required>
                 <option value="">— เลือก —</option>
                 <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
@@ -369,7 +369,7 @@
               </select>
             </div>
             <div class="rank-row">
-              <div class="rank-label">อันดับ 3</div>
+              <div class="rank-label">อันดับ 3 <span class="req">*</span></div>
               <select id="rank3" class="rank-select" required>
                 <option value="">— เลือก —</option>
                 <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
@@ -381,7 +381,7 @@
               </select>
             </div>
             <div class="rank-row">
-              <div class="rank-label">อันดับ 4</div>
+              <div class="rank-label">อันดับ 4 <span class="req">*</span></div>
               <select id="rank4" class="rank-select" required>
                 <option value="">— เลือก —</option>
                 <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
@@ -393,7 +393,7 @@
               </select>
             </div>
             <div class="rank-row">
-              <div class="rank-label">อันดับ 5</div>
+              <div class="rank-label">อันดับ 5 <span class="req">*</span></div>
               <select id="rank5" class="rank-select" required>
                 <option value="">— เลือก —</option>
                 <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
@@ -405,7 +405,7 @@
               </select>
             </div>
             <div class="rank-row">
-              <div class="rank-label">อันดับ 6</div>
+              <div class="rank-label">อันดับ 6 <span class="req">*</span></div>
               <select id="rank6" class="rank-select" required>
                 <option value="">— เลือก —</option>
                 <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
@@ -427,8 +427,8 @@
             อธิบายเพิ่มเติม (ไม่บังคับ)
           </div>
           <div class="form-group">
-            <label>อธิบายแรงจูงใจในการทำงานอยู่ในปัจจุบันเพิ่มเติม</label>
-            <textarea id="detail" rows="4" placeholder="เล่าเพิ่มเติมเกี่ยวกับแรงจูงใจปัจจุบันของคุณ เช่น ทำไมถึงเลือกแบบนี้ มีอะไรเปลี่ยนแปลงไหม ฯลฯ"></textarea>
+            <label>อธิบายแรงจูงใจในการทำงานอยู่ในปัจจุบันเพิ่มเติม <span class="req">*</span></label>
+            <textarea id="detail" rows="4" required minlength="5" placeholder="เล่าเพิ่มเติมเกี่ยวกับแรงจูงใจปัจจุบันของคุณ เช่น ทำไมถึงเลือกแบบนี้ มีอะไรเปลี่ยนแปลงไหม ฯลฯ"></textarea>
           </div>
         </div>
 
@@ -1080,6 +1080,10 @@
         const errEl = document.getElementById('rankError');
         errEl.textContent = 'อันดับ 1-6 ต้องไม่ซ้ำกัน';
         errEl.classList.add('show');
+        return;
+      }
+      if (!detail || detail.length < 5) {
+        alert('กรุณาอธิบายแรงจูงใจในการทำงานอยู่ในปัจจุบัน (อย่างน้อย 5 ตัวอักษร)');
         return;
       }
 
