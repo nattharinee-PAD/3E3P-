@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แบบประเมิน 3E3P (แรงจูงใจ) — PKG</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Sarabun', 'Tahoma', sans-serif;
+      background: #f5f5f7;
+      min-height: 100vh;
+      padding: 20px;
+      color: #2d2d2d;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      overflow: hidden;
+      border-top: 6px solid;
+      border-image: linear-gradient(to right,
+        #e40303 0%, #e40303 16.66%,
+        #ff8c00 16.66%, #ff8c00 33.33%,
+        #ffed00 33.33%, #ffed00 50%,
+        #008018 50%, #008018 66.66%,
+        #0066ff 66.66%, #0066ff 83.33%,
+        #732982 83.33%, #732982 100%) 1;
+    }
+    .header {
+      background: linear-gradient(135deg,
+        #e40303 0%, #ff8c00 20%, #ffed00 40%,
+        #008018 60%, #0066ff 80%, #732982 100%);
+      color: white;
+      padding: 32px 24px;
+      text-align: center;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    }
+    .header h1 { font-size: 28px; margin-bottom: 8px; }
+    .header p { font-size: 14px; opacity: 0.9; }
+    .form-body { padding: 32px 24px; }
+    .section { margin-bottom: 32px; }
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title .badge {
+      background: linear-gradient(135deg, #e40303 0%, #ff8c00 50%, #ffed00 100%);
+      color: white;
+      font-size: 12px;
+      padding: 2px 10px;
+      border-radius: 12px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: #4a5568;
+      margin-bottom: 6px;
+    }
+    .form-group label .req { color: #e53e3e; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #0066ff;
+      box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+    }
+    .form-group input[readonly] {
+      background: #f7fafc;
+      color: #718096;
+      cursor: not-allowed;
+    }
+    .form-group input[readonly]::placeholder {
+      color: #cbd5e0;
+      font-style: italic;
+    }
+    .form-group input[readonly].error {
+      background: #fff5f5;
+      color: #e53e3e;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .checkbox-group,
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .checkbox-item,
+    .radio-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .checkbox-item:hover,
+    .radio-item:hover {
+      background: #f7fafc;
+      border-color: #cbd5e0;
+    }
+    .checkbox-item input,
+    .radio-item input {
+      margin-top: 2px;
+      cursor: pointer;
+    }
+    .checkbox-item label,
+    .radio-item label {
+      font-size: 14px;
+      color: #2d3748;
+      cursor: pointer;
+      flex: 1;
+      margin: 0;
+    }
+    .rank-row {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .rank-row .rank-label {
+      font-weight: 600;
+      color: #e40303;
+      font-size: 16px;
+    }
+    .error-msg {
+      color: #e53e3e;
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      background: linear-gradient(135deg,
+        #e40303 0%, #ff8c00 20%, #ffed00 40%,
+        #008018 60%, #0066ff 80%, #732982 100%);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(115, 41, 130, 0.4);
+    }
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .success-msg {
+      display: none;
+      background: linear-gradient(135deg, #c6f6d5 0%, #bee3f8 100%);
+      color: #22543d;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 500;
+    }
+    .success-msg.show { display: block; }
+    .help-text {
+      font-size: 12px;
+      color: #718096;
+      margin-top: 4px;
+    }
+    .loading {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #ffffff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      .header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🏳️‍🌈 แบบฟอร์ม 3E3P (แรงจูงใจ) สมาชิก P5</h1>
+      <p>ระบบพัฒนาบุคลากร · วัดผลทุกสถานะ</p>
+      <p style="font-size: 12px; margin-top: 8px; opacity: 0.95;">✨ ทุกความหลากหลายมีค่า · Every voice matters ✨</p>
+    </div>
+
+    <div class="form-body">
+      <div class="success-msg" id="successMsg">
+        ✅ บันทึกข้อมูลเรียบร้อย! ขอบคุณสำหรับการประเมิน
+      </div>
+
+      <form id="motivationForm" autocomplete="off">
+        <!-- Section 0: ข้อมูลสมาชิก -->
+        <div class="section">
+          <div class="section-title">
+            <span class="badge">0</span>
+            ข้อมูลสมาชิก
+          </div>
+
+          <div class="form-group">
+            <label>รหัสสมาชิก <span class="req">*</span></label>
+            <input type="text" id="memberId" maxlength="7" placeholder="เช่น 6006083 หรือ 6407049" required>
+            <div class="help-text">กรอกรหัส 7 หลัก ระบบจะดึงชื่อและ BU อัตโนมูลิ<br>💡 <b>ทดสอบ:</b> 6407049, 9005905, 6604216, 9999999</div>
+            <div class="error-msg" id="memberIdError">ไม่พบรหัสสมาชิกนี้ในระบบ</div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>ชื่อ-นามสกุล</label>
+              <input type="text" id="memberName" readonly placeholder="— รอกรอกรหัส —">
+            </div>
+            <div class="form-group">
+              <label>ฝ่าย (BU)</label>
+              <input type="text" id="memberBU" readonly placeholder="—">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 0.5: สถานะ + หลักสูตรที่อบรม -->
+        <div class="section">
+          <div class="section-title">
+            <span class="badge">0.5</span>
+            สถานะ / หลักสูตรที่อบรม ของคุณ
+          </div>
+          <div class="form-group">
+            <label>สถานะ</label>
+            <select id="status">
+              <option value="">— เลือกสถานะ —</option>
+              <option value="สมาชิกกรายวัน">สมาชิกกรายวัน</option>
+              <option value="สมาชิกสัญญาจ้าง 1 เดือน">สมาชิกสัญญาจ้าง 1 เดือน</option>
+              <option value="สมาชิกสัญญาจ้าง 2 เดือน">สมาชิกสัญญาจ้าง 2 เดือน</option>
+              <option value="สมาชิกสัญญาจ้าง 3 เดือน">สมาชิกสัญญาจ้าง 3 เดือน</option>
+              <option value="สมาชิกสัญญาจ้าง 6 เดือน">สมาชิกสัญญาจ้าง 6 เดือน</option>
+              <option value="ทดลองงาน">ทดลองงาน</option>
+              <option value="โอนย้ายสาขา JOB ใหม่">โอนย้ายสาขา JOB ใหม่</option>
+              <option value="เลื่อนตำแหน่ง">เลื่อนตำแหน่ง</option>
+              <option value="จับคู่คนกับงาน(พัฒนาศักยภาพ)">จับคู่คนกับงาน(พัฒนาศักยภาพ)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>หลักสูตรที่อบรม</label>
+            <select id="course" onchange="toggleOtherCourse()">
+              <option value="">— เลือกหลักสูตร —</option>
+              <option value="ปฐมนิเทศ Mini">หลักสูตร ปฐมนิเทศ Mini</option>
+              <option value="ทุติยนิเทศ">หลักสูตร ทุติยนิเทศ</option>
+              <option value="ตติยนิเทศ">หลักสูตร ตติยนิเทศ</option>
+              <option value="จตุรนิเทศ">หลักสูตร จตุรนิเทศ</option>
+              <option value="ปัญจนิเทศ">หลักสูตร ปัญจนิเทศ</option>
+              <option value="ภาวะผู้นำ">หลักสูตร ภาวะผู้นำ</option>
+              <option value="อื่นๆ">หลักสูตร อื่นๆ</option>
+            </select>
+          </div>
+          <div class="form-group" id="otherCourseGroup" style="display: none;">
+            <label>ระบุชื่อหลักสูตรอื่นๆ</label>
+            <input type="text" id="otherCourse" placeholder="เช่น หลักสูตรพัฒนาทักษะเฉพาะทาง">
+          </div>
+        </div>
+
+        <!-- Section 1: แรงจูงใจแรก -->
+        <div class="section">
+          <div class="section-title">
+            <span class="badge">1</span>
+            แรงจูงใจแรกในการมาทำงาน (ครั้งแรกของการมาสมัครทำงาน) <span class="req">*</span>
+          </div>
+          <div class="help-text" style="margin-bottom: 12px;">เลือกได้มากกว่า 1 ข้อ</div>
+          <div class="checkbox-group">
+            <div class="checkbox-item">
+              <input type="checkbox" id="initA" name="motivation_initial" value="A">
+              <label for="initA">ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="initB" name="motivation_initial" value="B">
+              <label for="initB">องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="initC" name="motivation_initial" value="C">
+              <label for="initC">องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="initD" name="motivation_initial" value="D">
+              <label for="initD">ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="initE" name="motivation_initial" value="E">
+              <label for="initE">ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="initF" name="motivation_initial" value="F">
+              <label for="initF">ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</label>
+            </div>
+          </div>
+          <div class="error-msg" id="initError">กรุณาเลือกอย่างน้อย 1 ข้อ</div>
+        </div>
+
+        <!-- Section 2: แรงจูงใจปัจจุบัน -->
+        <div class="section">
+          <div class="section-title">
+            <span class="badge">2</span>
+            แรงจูงใจในการทำงานอยู่ในปัจจุบัน <span class="req">*</span>
+          </div>
+          <div class="help-text" style="margin-bottom: 12px;">เรียงลำดับจากมากไปหาน้อย (อันดับ 1 = มากที่สุด) · เลือกให้ครบทั้ง 6 อันดับ</div>
+          <div id="rankContainer">
+            <div class="rank-row">
+              <div class="rank-label">อันดับ 1 <span class="req">*</span></div>
+              <select id="rank1" class="rank-select" required>
+                <option value="">— เลือก —</option>
+                <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
+                <option value="B">B: องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</option>
+                <option value="C">C: องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</option>
+                <option value="D">D: ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</option>
+                <option value="E">E: ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</option>
+                <option value="F">F: ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</option>
+              </select>
+            </div>
+            <div class="rank-row">
+              <div class="rank-label">อันดับ 2 <span class="req">*</span></div>
+              <select id="rank2" class="rank-select" required>
+                <option value="">— เลือก —</option>
+                <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
+                <option value="B">B: องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</option>
+                <option value="C">C: องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</option>
+                <option value="D">D: ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</option>
+                <option value="E">E: ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</option>
+                <option value="F">F: ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</option>
+              </select>
+            </div>
+            <div class="rank-row">
+              <div class="rank-label">อันดับ 3 <span class="req">*</span></div>
+              <select id="rank3" class="rank-select" required>
+                <option value="">— เลือก —</option>
+                <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
+                <option value="B">B: องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</option>
+                <option value="C">C: องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</option>
+                <option value="D">D: ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</option>
+                <option value="E">E: ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</option>
+                <option value="F">F: ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</option>
+              </select>
+            </div>
+            <div class="rank-row">
+              <div class="rank-label">อันดับ 4 <span class="req">*</span></div>
+              <select id="rank4" class="rank-select" required>
+                <option value="">— เลือก —</option>
+                <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
+                <option value="B">B: องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</option>
+                <option value="C">C: องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</option>
+                <option value="D">D: ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</option>
+                <option value="E">E: ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</option>
+                <option value="F">F: ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</option>
+              </select>
+            </div>
+            <div class="rank-row">
+              <div class="rank-label">อันดับ 5 <span class="req">*</span></div>
+              <select id="rank5" class="rank-select" required>
+                <option value="">— เลือก —</option>
+                <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
+                <option value="B">B: องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</option>
+                <option value="C">C: องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</option>
+                <option value="D">D: ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</option>
+                <option value="E">E: ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</option>
+                <option value="F">F: ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</option>
+              </select>
+            </div>
+            <div class="rank-row">
+              <div class="rank-label">อันดับ 6 <span class="req">*</span></div>
+              <select id="rank6" class="rank-select" required>
+                <option value="">— เลือก —</option>
+                <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
+                <option value="B">B: องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</option>
+                <option value="C">C: องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</option>
+                <option value="D">D: ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</option>
+                <option value="E">E: ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</option>
+                <option value="F">F: ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</option>
+              </select>
+            </div>
+          </div>
+          <div class="error-msg" id="rankError">กรุณาเลือกให้ครบทั้ง 6 อันดับ และต้องไม่ซ้ำกัน</div>
+        </div>
+
+        <!-- Section 3: อธิบายเพิ่มเติม -->
+        <div class="section">
+          <div class="section-title">
+            <span class="badge">3</span>
+            อธิบายเพิ่มเติม
+          </div>
+          <div class="form-group">
+            <label>อธิบายเพิ่มเติม ของข้อที่ 2. แรงจูงใจในการทำงานอยู่ในปัจจุบันคือ <span class="req">*</span></label>
+            <textarea id="detail" rows="4" required minlength="5" placeholder="เล่าเพิ่มเติมเกี่ยวกับแรงจูงใจปัจจุบันของคุณ เช่น ทำไมถึงเลือกแบบนี้ มีอะไรเปลี่ยนแปลงไหม ฯลฯ"></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">ส่งข้อมูล</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ===== Lookup via GAS =====
+    let lookupTimer = null;
+
+    function lookupMember(id) {
+      return new Promise((resolve, reject) => {
+        google.script.run
+          .withSuccessHandler(member => resolve(member))
+          .withFailureHandler(err => reject(err))
+          .lookupMember(id);
+      });
+    }
+
+    document.getElementById('memberId').addEventListener('input', async (e) => {
+      clearTimeout(lookupTimer);
+      const id = e.target.value.trim();
+      const errorEl = document.getElementById('memberIdError');
+      const nameEl = document.getElementById('memberName');
+      const buEl = document.getElementById('memberBU');
+
+      if (id.length === 0) {
+        nameEl.value = ''; nameEl.placeholder = '— รอกรอกรหัส —';
+        nameEl.classList.remove('error');
+        buEl.value = ''; buEl.placeholder = '—';
+        buEl.classList.remove('error');
+        errorEl.classList.remove('show');
+        return;
+      }
+
+      if (id.length < 6) return;
+
+      lookupTimer = setTimeout(async () => {
+        try {
+          const member = await lookupMember(id);
+          if (member && !member.error) {
+            nameEl.value = member.name;
+            buEl.value = member.bu;
+            nameEl.placeholder = ''; buEl.placeholder = '';
+            nameEl.classList.remove('error');
+            buEl.classList.remove('error');
+            errorEl.classList.remove('show');
+          } else {
+            nameEl.value = ''; buEl.value = '';
+            nameEl.placeholder = '— ไม่พบข้อมูล —';
+            buEl.placeholder = '—';
+            nameEl.classList.add('error');
+            buEl.classList.add('error');
+            errorEl.classList.add('show');
+          }
+        } catch (err) {
+          console.error('Lookup error:', err);
+          errorEl.classList.add('show');
+        }
+      }, 300);
+    });
+
+    // ===== Validate rank 1-6 =====
+    function validateRank() {
+      const errorEl = document.getElementById('rankError');
+      const selected = {};
+      for (let i = 1; i <= 6; i++) {
+        selected['rank' + i] = document.getElementById('rank' + i).value;
+      }
+      const rankVals = Object.values(selected);
+      const allFilled = rankVals.every(v => v);
+      const allUnique = new Set(rankVals).size === rankVals.length;
+      if (allFilled && allUnique) {
+        errorEl.classList.remove('show');
+      }
+      // Real-time disable options that are already selected in other dropdowns
+      for (let i = 1; i <= 6; i++) {
+        const sel = document.getElementById('rank' + i);
+        const myVal = sel.value;
+        const usedInOthers = new Set();
+        for (let j = 1; j <= 6; j++) {
+          if (j === i) continue;
+          const v = selected['rank' + j];
+          if (v) usedInOthers.add(v);
+        }
+        Array.from(sel.options).forEach(opt => {
+          if (opt.value === '') return;
+          if (opt.value === myVal) {
+            opt.disabled = false;
+          } else {
+            opt.disabled = usedInOthers.has(opt.value);
+          }
+        });
+      }
+      return allFilled && allUnique;
+    }
+    for (let i = 1; i <= 6; i++) {
+      document.getElementById('rank' + i).addEventListener('change', validateRank);
+    }
+
+    // ===== Toggle Other Course =====
+    function toggleOtherCourse() {
+      const course = document.getElementById('course').value;
+      const otherGroup = document.getElementById('otherCourseGroup');
+      otherGroup.style.display = course === 'อื่นๆ' ? 'block' : 'none';
+    }
+
+    // ===== Submit via GAS =====
+    document.getElementById('motivationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submitBtn');
+
+      const memberId = document.getElementById('memberId').value.trim();
+      const memberName = document.getElementById('memberName').value.trim();
+      const memberBU = document.getElementById('memberBU').value.trim();
+      const status = document.getElementById('status').value;
+      const course = document.getElementById('course').value;
+      const otherCourse = document.getElementById('otherCourse').value.trim();
+      const initialChecked = Array.from(document.querySelectorAll('input[name="motivation_initial"]:checked')).map(c => c.value);
+      const ranks = {};
+      for (let i = 1; i <= 6; i++) {
+        ranks['rank' + i] = document.getElementById('rank' + i).value;
+      }
+      const detail = document.getElementById('detail').value.trim();
+
+      // Validations
+      if (!memberName) {
+        document.getElementById('memberIdError').classList.add('show');
+        document.getElementById('memberId').focus();
+        return;
+      }
+      if (!status && !course) {
+        alert('กรุณาเลือกอย่างน้อย 1 อย่าง (สถานะ หรือ หลักสูตรที่อบรม)');
+        return;
+      }
+      if (course === 'อื่นๆ' && !otherCourse) {
+        alert('กรุณาระบุชื่อหลักสูตรอื่นๆ');
+        return;
+      }
+      if (initialChecked.length === 0) {
+        document.getElementById('initError').classList.add('show');
+        return;
+      } else {
+        document.getElementById('initError').classList.remove('show');
+      }
+      const rankVals = Object.values(ranks);
+      const allFilled = rankVals.every(v => v);
+      const allUnique = new Set(rankVals).size === rankVals.length;
+      if (!allFilled) {
+        const errEl = document.getElementById('rankError');
+        errEl.textContent = 'กรุณาเลือกให้ครบทั้ง 6 อันดับ';
+        errEl.classList.add('show');
+        return;
+      }
+      if (!allUnique) {
+        const errEl = document.getElementById('rankError');
+        errEl.textContent = 'อันดับ 1-6 ต้องไม่ซ้ำกัน';
+        errEl.classList.add('show');
+        return;
+      }
+      if (!detail || detail.length < 5) {
+        alert('กรุณาอธิบายแรงจูงใจในการทำงานอยู่ในปัจจุบัน (อย่างน้อย 5 ตัวอักษร)');
+        return;
+      }
+
+      const payload = {
+        submission_id: 'sub_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        timestamp: new Date().toISOString(),
+        member_id: memberId,
+        member_name: memberName,
+        bu: memberBU,
+        status: status,
+        course: course,
+        course_other: course === 'อื่นๆ' ? otherCourse : '',
+        motivation_initial: initialChecked,
+        motivation_current: ranks,
+        motivation_detail: detail,
+        source: '3E3P_Form'
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="loading"></span>กำลังบันทึกข้อมูล...';
+
+      // Save via GAS
+      google.script.run
+        .withSuccessHandler(result => {
+          console.log('✅ Save result:', result);
+          if (result.ok) {
+            document.getElementById('successMsg').classList.add('show');
+            document.getElementById('successMsg').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('successMsg').textContent = '✅ บันทึกข้อมูลเรียบร้อย! (Row ' + result.row + ') ขอบคุณสำหรับการประเมิน 🏳️‍🌈';
+            setTimeout(() => {
+              document.getElementById('motivationForm').reset();
+              document.getElementById('memberName').value = '';
+              document.getElementById('memberName').placeholder = '— รอกรอกรหัส —';
+              document.getElementById('memberName').classList.remove('error');
+              document.getElementById('memberBU').value = '';
+              document.getElementById('memberBU').placeholder = '—';
+              document.getElementById('memberBU').classList.remove('error');
+              document.getElementById('otherCourseGroup').style.display = 'none';
+              document.getElementById('otherCourse').value = '';
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = '🏳️‍🌈 ส่งข้อมูล';
+              setTimeout(() => {
+                document.getElementById('successMsg').classList.remove('show');
+              }, 5000);
+            }, 2000);
+          } else {
+            alert('❌ Error: ' + result.error);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '🏳️‍🌈 ส่งข้อมูล';
+          }
+        })
+        .withFailureHandler(err => {
+          alert('❌ Save failed: ' + err.message);
+          console.error('Save error:', err);
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '🏳️‍🌈 ส่งข้อมูล';
+        })
+        .saveSubmission(payload);
+    });
+  
+  </script>
