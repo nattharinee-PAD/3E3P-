@@ -223,8 +223,9 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>📊 แบบประเมิน 3E3P (แรงจูงใจ)</h1>
-      <p>แบบประเมินสำหรับสมาชิกวัดผลทุกสถานะ • PKG</p>
+      <h1>🏳️‍🌈 แบบฟอร์ม 3E3P (แรงจูงใจ) สมาชิก P5</h1>
+      <p>ระบบพัฒนาบุคลากร · วัดผลทุกสถานะ</p>
+      <p style="font-size: 12px; margin-top: 8px; opacity: 0.95;">✨ ทุกความหลากหลายมีค่า · Every voice matters ✨</p>
     </div>
 
     <div class="form-body">
@@ -259,13 +260,14 @@
           </div>
         </div>
 
-        <!-- Section 0.5: สถานะ -->
+        <!-- Section 0.5: สถานะ + หลักสูตรที่อบรม -->
         <div class="section">
           <div class="section-title">
             <span class="badge">0.5</span>
-            สถานะของคุณ
+            สถานะ / หลักสูตรที่อบรม ของคุณ
           </div>
           <div class="form-group">
+            <label>สถานะ <span class="req">*</span></label>
             <select id="status" required>
               <option value="">— เลือกสถานะ —</option>
               <option value="สมาชิกกรายวัน">สมาชิกกรายวัน</option>
@@ -279,6 +281,23 @@
               <option value="จับคู่คนกับงาน(พัฒนาศักยภาพ)">จับคู่คนกับงาน(พัฒนาศักยภาพ)</option>
             </select>
           </div>
+          <div class="form-group">
+            <label>หลักสูตรที่อบรม <span class="req">*</span></label>
+            <select id="course" required onchange="toggleOtherCourse()">
+              <option value="">— เลือกหลักสูตร —</option>
+              <option value="ปฐมนิเทศ Mini">หลักสูตร ปฐมนิเทศ Mini</option>
+              <option value="ทุติยนิเทศ">หลักสูตร ทุติยนิเทศ</option>
+              <option value="ตติยนิเทศ">หลักสูตร ตติยนิเทศ</option>
+              <option value="จตุรนิเทศ">หลักสูตร จตุรนิเทศ</option>
+              <option value="ปัญจนิเทศ">หลักสูตร ปัญจนิเทศ</option>
+              <option value="ภาวะผู้นำ">หลักสูตร ภาวะผู้นำ</option>
+              <option value="อื่นๆ">หลักสูตร อื่นๆ</option>
+            </select>
+          </div>
+          <div class="form-group" id="otherCourseGroup" style="display: none;">
+            <label>ระบุชื่อหลักสูตรอื่นๆ</label>
+            <input type="text" id="otherCourse" placeholder="เช่น หลักสูตรพัฒนาทักษะเฉพาะทาง">
+          </div>
         </div>
 
         <!-- Section 1: แรงจูงใจแรก -->
@@ -291,15 +310,27 @@
           <div class="checkbox-group">
             <div class="checkbox-item">
               <input type="checkbox" id="initA" name="motivation_initial" value="A">
-              <label for="initA">ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG, องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</label>
+              <label for="initA">ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</label>
             </div>
             <div class="checkbox-item">
               <input type="checkbox" id="initB" name="motivation_initial" value="B">
-              <label for="initB">องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็มประสิทธิภาพ</label>
+              <label for="initB">องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</label>
             </div>
             <div class="checkbox-item">
               <input type="checkbox" id="initC" name="motivation_initial" value="C">
-              <label for="initC">ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยงครอบครัว</label>
+              <label for="initC">องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="initD" name="motivation_initial" value="D">
+              <label for="initD">ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="initE" name="motivation_initial" value="E">
+              <label for="initE">ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</label>
+            </div>
+            <div class="checkbox-item">
+              <input type="checkbox" id="initF" name="motivation_initial" value="F">
+              <label for="initF">ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</label>
             </div>
           </div>
           <div class="error-msg" id="initError">กรุณาเลือกอย่างน้อย 1 ข้อ</div>
@@ -311,27 +342,82 @@
             <span class="badge">2</span>
             แรงจูงใจในการทำงานอยู่ในปัจจุบัน
           </div>
-          <div class="help-text" style="margin-bottom: 12px;">เรียงลำดับจากมากไปหาน้อย (อันดับ 1 = มากที่สุด)</div>
-          
-          <div class="rank-row">
-            <div class="rank-label">อันดับ 1</div>
-            <select id="rank1" required>
-              <option value="">— เลือก —</option>
-              <option value="A">A: สนุกกับการทำงานใน PKG, องค์กรตอบโจทย์จุดมุ่งหมาย</option>
-              <option value="B">B: ต้องการค่าตอบแทนเพื่อเลี้ยงครอบครัว</option>
-            </select>
+          <div class="help-text" style="margin-bottom: 12px;">เรียงลำดับจากมากไปหาน้อย (อันดับ 1 = มากที่สุด) · เลือกให้ครบทั้ง 6 อันดับ</div>
+          <div id="rankContainer">
+            <div class="rank-row">
+              <div class="rank-label">อันดับ 1</div>
+              <select id="rank1" class="rank-select" required>
+                <option value="">— เลือก —</option>
+                <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
+                <option value="B">B: องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</option>
+                <option value="C">C: องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</option>
+                <option value="D">D: ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</option>
+                <option value="E">E: ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</option>
+                <option value="F">F: ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</option>
+              </select>
+            </div>
+            <div class="rank-row">
+              <div class="rank-label">อันดับ 2</div>
+              <select id="rank2" class="rank-select" required>
+                <option value="">— เลือก —</option>
+                <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
+                <option value="B">B: องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</option>
+                <option value="C">C: องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</option>
+                <option value="D">D: ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</option>
+                <option value="E">E: ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</option>
+                <option value="F">F: ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</option>
+              </select>
+            </div>
+            <div class="rank-row">
+              <div class="rank-label">อันดับ 3</div>
+              <select id="rank3" class="rank-select" required>
+                <option value="">— เลือก —</option>
+                <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
+                <option value="B">B: องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</option>
+                <option value="C">C: องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</option>
+                <option value="D">D: ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</option>
+                <option value="E">E: ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</option>
+                <option value="F">F: ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</option>
+              </select>
+            </div>
+            <div class="rank-row">
+              <div class="rank-label">อันดับ 4</div>
+              <select id="rank4" class="rank-select" required>
+                <option value="">— เลือก —</option>
+                <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
+                <option value="B">B: องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</option>
+                <option value="C">C: องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</option>
+                <option value="D">D: ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</option>
+                <option value="E">E: ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</option>
+                <option value="F">F: ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</option>
+              </select>
+            </div>
+            <div class="rank-row">
+              <div class="rank-label">อันดับ 5</div>
+              <select id="rank5" class="rank-select" required>
+                <option value="">— เลือก —</option>
+                <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
+                <option value="B">B: องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</option>
+                <option value="C">C: องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</option>
+                <option value="D">D: ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</option>
+                <option value="E">E: ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</option>
+                <option value="F">F: ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</option>
+              </select>
+            </div>
+            <div class="rank-row">
+              <div class="rank-label">อันดับ 6</div>
+              <select id="rank6" class="rank-select" required>
+                <option value="">— เลือก —</option>
+                <option value="A">A: ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG</option>
+                <option value="B">B: องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า</option>
+                <option value="C">C: องค์กร PKG นี้ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็ม ประสิทธิภาพ</option>
+                <option value="D">D: ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุกๆคน</option>
+                <option value="E">E: ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยง ครอบครัว</option>
+                <option value="F">F: ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน</option>
+              </select>
+            </div>
           </div>
-          
-          <div class="rank-row">
-            <div class="rank-label">อันดับ 2</div>
-            <select id="rank2" required>
-              <option value="">— เลือก —</option>
-              <option value="A">A: สนุกกับการทำงานใน PKG, องค์กรตอบโจทย์จุดมุ่งหมาย</option>
-              <option value="B">B: ต้องการค่าตอบแทนเพื่อเลี้ยงครอบครัว</option>
-            </select>
-          </div>
-          
-          <div class="error-msg" id="rankError">กรุณาเลือกให้ครบทั้ง 2 อันดับ และต้องไม่ซ้ำกัน</div>
+          <div class="error-msg" id="rankError">กรุณาเลือกให้ครบทั้ง 6 อันดับ และต้องไม่ซ้ำกัน</div>
         </div>
 
         <!-- Section 3: อธิบายเพิ่มเติม -->
@@ -894,23 +980,32 @@
       }, 300);
     });
 
-    // ===== Validate rank (ไม่ซ้ำกัน) =====
+    // ===== Toggle Other Course =====
+    function toggleOtherCourse() {
+      const course = document.getElementById('course').value;
+      const otherGroup = document.getElementById('otherCourseGroup');
+      otherGroup.style.display = course === 'อื่นๆ' ? 'block' : 'none';
+    }
+
+    // ===== Validate rank 1-6 (ไม่ซ้ำกัน) =====
     function validateRank() {
-      const rank1 = document.getElementById('rank1').value;
-      const rank2 = document.getElementById('rank2').value;
-      const errorEl = document.getElementById('rankError');
-      if (rank1 && rank2 && rank1 === rank2) {
-        errorEl.classList.add('show');
-        return false;
+      const ranks = [];
+      for (let i = 1; i <= 6; i++) {
+        const v = document.getElementById('rank' + i).value;
+        if (v) ranks.push(v);
       }
-      if (rank1 && rank2 && rank1 !== rank2) {
+      const errorEl = document.getElementById('rankError');
+      const allFilled = ranks.length === 6;
+      const allUnique = new Set(ranks).size === ranks.length;
+      if (allFilled && allUnique) {
         errorEl.classList.remove('show');
         return true;
       }
       return false;
     }
-    document.getElementById('rank1').addEventListener('change', validateRank);
-    document.getElementById('rank2').addEventListener('change', validateRank);
+    for (let i = 1; i <= 6; i++) {
+      document.getElementById('rank' + i).addEventListener('change', validateRank);
+    }
 
     // ===== Submit =====
     document.getElementById('motivationForm').addEventListener('submit', async (e) => {
@@ -921,9 +1016,13 @@
       const memberName = document.getElementById('memberName').value.trim();
       const memberBU = document.getElementById('memberBU').value.trim();
       const status = document.getElementById('status').value;
+      const course = document.getElementById('course').value;
+      const otherCourse = document.getElementById('otherCourse').value.trim();
       const initialChecked = Array.from(document.querySelectorAll('input[name="motivation_initial"]:checked')).map(c => c.value);
-      const rank1 = document.getElementById('rank1').value;
-      const rank2 = document.getElementById('rank2').value;
+      const ranks = {};
+      for (let i = 1; i <= 6; i++) {
+        ranks['rank' + i] = document.getElementById('rank' + i).value;
+      }
       const detail = document.getElementById('detail').value.trim();
 
       // Member lookup
@@ -933,21 +1032,30 @@
         return;
       }
       if (!status) { alert('กรุณาเลือกสถานะ'); return; }
+      if (!course) { alert('กรุณาเลือกหลักสูตรที่อบรม'); return; }
+      if (course === 'อื่นๆ' && !otherCourse) {
+        alert('กรุณาระบุชื่อหลักสูตรอื่นๆ');
+        return;
+      }
       if (initialChecked.length === 0) {
         document.getElementById('initError').classList.add('show');
         return;
       } else {
         document.getElementById('initError').classList.remove('show');
       }
-      if (!rank1 || !rank2) {
+      // Rank validation
+      const rankVals = Object.values(ranks);
+      const allFilled = rankVals.every(v => v);
+      const allUnique = new Set(rankVals).size === rankVals.length;
+      if (!allFilled) {
         const errEl = document.getElementById('rankError');
-        errEl.textContent = 'กรุณาเลือกให้ครบทั้ง 2 อันดับ';
+        errEl.textContent = 'กรุณาเลือกให้ครบทั้ง 6 อันดับ';
         errEl.classList.add('show');
         return;
       }
-      if (rank1 === rank2) {
+      if (!allUnique) {
         const errEl = document.getElementById('rankError');
-        errEl.textContent = 'อันดับ 1 และ 2 ต้องไม่ซ้ำกัน';
+        errEl.textContent = 'อันดับ 1-6 ต้องไม่ซ้ำกัน';
         errEl.classList.add('show');
         return;
       }
@@ -959,8 +1067,10 @@
         member_name: memberName,
         bu: memberBU,
         status: status,
+        course: course,
+        course_other: course === 'อื่นๆ' ? otherCourse : '',
         motivation_initial: initialChecked,
-        motivation_current: { rank1: rank1, rank2: rank2 },
+        motivation_current: ranks,
         motivation_detail: detail,
         source: '3E3P_Form'
       };
