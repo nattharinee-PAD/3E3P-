@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://docs.google.com https://*.googleusercontent.com; frame-ancestors 'none';">
+  <title>PAD-02 Daily Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Sarabun', 'Tahoma', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #2d3748;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    .header {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    .header h1 {
+      font-size: 28px;
+      color: #2d3748;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header .date {
+      color: #718096;
+      font-size: 14px;
+    }
+    .header .goal {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #e2e8f0;
+      color: #4a5568;
+      font-size: 14px;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .kpi-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+    .kpi-card.ok::before { background: linear-gradient(90deg, #48bb78, #38a169); }
+    .kpi-card.warn::before { background: linear-gradient(90deg, #ed8936, #dd6b20); }
+    .kpi-card.danger::before { background: linear-gradient(90deg, #f56565, #c53030); }
+    .kpi-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .kpi-progress {
+      width: 100%;
+      height: 8px;
+      background: #edf2f7;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .kpi-progress-bar {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.5s;
+    }
+    .kpi-progress-bar.ok { background: linear-gradient(90deg, #48bb78, #38a169); }
+    .kpi-progress-bar.warn { background: linear-gradient(90deg, #ed8936, #dd6b20); }
+    .kpi-progress-bar.danger { background: linear-gradient(90deg, #f56565, #c53030); }
+    .kpi-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .kpi-stat {
+      background: #f7fafc;
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+    .kpi-stat-label { color: #718096; font-size: 11px; }
+    .kpi-stat-value {
+      font-weight: 700;
+      font-size: 16px;
+      color: #2d3748;
+    }
+    .section-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .ap-list {
+      list-style: none;
+      counter-reset: ap-counter;
+    }
+    .ap-list li {
+      counter-increment: ap-counter;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      background: #f7fafc;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+      font-size: 14px;
+      color: #2d3748;
+      position: relative;
+      padding-left: 48px;
+    }
+    .ap-list li::before {
+      content: counter(ap-counter);
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #667eea;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .comment-item {
+      padding: 12px 16px;
+      background: #fffaf0;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #4a5568;
+      border-left: 3px solid #ed8936;
+    }
+    .footer {
+      text-align: center;
+      color: white;
+      font-size: 12px;
+      padding: 20px;
+      opacity: 0.9;
+    }
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      color: white;
+      font-size: 18px;
+    }
+    .error-box {
+      background: #fed7d7;
+      color: #742a2a;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px;
+      text-align: center;
+    }
+    .icon { font-size: 20px; }
+    @media (max-width: 640px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+      .header h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><span class="icon">📊</span> PAD-02 รายงานประจำวัน</h1>
+      <div class="date" id="reportDate">กำลังโหลด...</div>
+      <div class="goal" id="goalText"></div>
+    </div>
+
+    <div id="loading" class="loading">
+      ⏳ กำลังดึงข้อมูลจาก Google Sheet...
+    </div>
+
+    <div id="errorBox" class="error-box" style="display:none"></div>
+
+    <div id="dashboardContent" style="display:none">
+      <div class="kpi-grid" id="kpiGrid"></div>
+
+      <div class="section-card">
+        <div class="section-title">
+          <span class="icon">⚡</span> Action Plan (AP)
+        </div>
+        <ol class="ap-list" id="apList"></ol>
+      </div>
+
+      <div class="section-card" id="commentSection">
+        <div class="section-title">
+          <span class="icon">📝</span> Daily Comments
+        </div>
+        <div id="commentsList"></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      🔄 ดึงข้อมูลเมื่อ <span id="fetchTime">-</span> ·
+      📊 Source: <a href="https://docs.google.com/spreadsheets/d/1kVePNmh6WnqJxdLk5uJd8kjw5xAA6M-G3Fx2uyZVJlc" style="color:white;text-decoration:underline">PAD-02 Daily Report</a>
+    </div>
+  </div>
+
+  <script>
+    // ============ CONFIG ============
+    const SHEET_ID = '1kVePNmh6WnqJxdLk5uJd8kjw5xAA6M-G3Fx2uyZVJlc';
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+
+    // ============ FETCH ============
+    async function fetchData() {
+      try {
+        const response = await fetch(CSV_URL);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const csv = await response.text();
+        return parseCSV(csv);
+      } catch (err) {
+        throw new Error(`ไม่สามารถดึงข้อมูลจาก Sheet: ${err.message}`);
+      }
+    }
+
+    function parseCSV(csv) {
+      const rows = [];
+      let row = [], field = '', inQuotes = false;
+      for (let i = 0; i < csv.length; i++) {
+        const c = csv[i], n = csv[i + 1];
+        if (inQuotes) {
+          if (c === '"' && n === '"') { field += '"'; i++; }
+          else if (c === '"') inQuotes = false;
+          else field += c;
+        } else {
+          if (c === '"') inQuotes = true;
+          else if (c === ',') { row.push(field); field = ''; }
+          else if (c === '\n' || c === '\r') {
+            if (field || row.length) { row.push(field); rows.push(row); row = []; field = ''; }
+            if (c === '\r' && n === '\n') i++;
+          } else field += c;
+        }
+      }
+      if (field || row.length) { row.push(field); rows.push(row); }
+      return rows.filter(r => r.some(c => c.trim() !== ''));
+    }
+
+    function extractData(rows) {
+      const sections = { training: {}, roleplay: {}, mentor: {}, coach: {}, ap: [], comments: [], goal: '', date: '' };
+      let currentSection = null, currentList = null;
+
+      for (const row of rows) {
+        const [a, b, c] = row.map(x => (x || '').trim());
+        if (a.startsWith('*')) {
+          const name = a.replace(/^\*+|\*+$/g, '').toLowerCase();
+          if (name.includes('training')) currentSection = 'training';
+          else if (name.includes('roleplay')) currentSection = 'roleplay';
+          else if (name.includes('mentor')) currentSection = 'mentor';
+          else if (name.includes('coach')) currentSection = 'coach';
+          else if (name.includes('pad-02')) { sections.date = b; }
+          else if (name.includes('จุดมุ่งหมาย')) sections.goal = b;
+          else if (name.includes('ภาพความสำเร็จ')) sections.vision = b;
+          continue;
+        }
+        if (a === 'AP') { currentSection = 'ap'; currentList = sections.ap; continue; }
+        if (a.startsWith('📝Daily') || a.startsWith('Daily')) { currentSection = 'comments'; currentList = sections.comments; continue; }
+
+        if (currentSection && ['training', 'roleplay', 'mentor', 'coach'].includes(currentSection)) {
+          if (a && b !== '' && !a.startsWith('Cheer')) {
+            const key = a.replace(/\s+/g, '_').substring(0, 50);
+            sections[currentSection][key] = { label: a, value: parseFloat(b.replace(/,/g, '')) || 0, unit: c };
+          }
+          if (a.startsWith('Cheer')) {
+            sections[currentSection].cheer_up = { value: parseFloat(b.replace(/,/g, '')) || 0 };
+          }
+        }
+        if (currentList && (currentSection === 'ap' || currentSection === 'comments')) {
+          if (b && b.trim()) currentList.push(currentSection === 'ap' ? { num: a, text: b.trim() } : b.trim());
+        }
+      }
+      return sections;
+    }
+
+    function findMetric(obj, kw) {
+      for (const k of Object.keys(obj)) if (kw.some(x => k.includes(x))) return obj[k];
+      return null;
+    }
+
+    function healthClass(pct, ok = 80, warn = 50) {
+      if (pct >= ok) return 'ok';
+      if (pct >= warn) return 'warn';
+      return 'danger';
+    }
+
+    function render(sections) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('dashboardContent').style.display = 'block';
+      document.getElementById('reportDate').textContent = sections.date ? `📅 ${sections.date}` : '📅 -';
+      document.getElementById('goalText').innerHTML = sections.goal ? `<b>🎯 จุดมุ่งหมาย:</b> ${sections.goal}` : '';
+      if (sections.vision) document.getElementById('goalText').innerHTML += `<br><b>🌟 ภาพสำเร็จ:</b> ${sections.vision}`;
+      document.getElementById('fetchTime').textContent = new Date().toLocaleString('th-TH');
+
+      // KPIs
+      const grid = document.getElementById('kpiGrid');
+      const cards = [];
+
+      // Training
+      const t_plan = findMetric(sections.training, ['แผนหลักสูตร']);
+      const t_done = findMetric(sections.training, ['เปิดอบรมตามแผน']);
+      const t_pending = findMetric(sections.training, ['รอส่งผล']);
+      const t_members = findMetric(sections.training, ['เข้าอบรมแต่ละ']);
+      if (t_plan) {
+        const pct = t_plan.value > 0 ? (t_done.value / t_plan.value) * 100 : 0;
+        cards.push(kpiCard('Training', pct, [
+          ['แผน', `${t_plan.value} ${t_plan.unit}`],
+          ['ผ่าน', t_done.value],
+          ['รอส่งผล', t_pending?.value || 0],
+          ['เข้าอบรม', `${t_members?.value || 0} คน`]
+        ], '🎓'));
+      }
+
+      // Roleplay
+      const r_total = findMetric(sections.roleplay, ['สรุปจำนวนทีม']);
+      const r_pass = findMetric(sections.roleplay, ['ผ่าน']);
+      const r_pending = findMetric(sections.roleplay, ['ยังไม่บรรลุ']);
+      if (r_total) {
+        const pct = r_total.value > 0 ? (r_pass.value / r_total.value) * 100 : 0;
+        cards.push(kpiCard('Roleplay', pct, [
+          ['ทั้งหมด', `${r_total.value} ทีม`],
+          ['ผ่าน', `${r_pass.value} ทีม`],
+          ['ยังไม่บรรลุ', `${r_pending.value} ทีม`],
+          ['Cheer up', `${sections.roleplay.cheer_up?.value || 0}%`]
+        ], '🎯', { ok: 50, warn: 30 }));
+      }
+
+      // Mentor
+      const m_total = findMetric(sections.mentor, ['อยู่ในระบบ']);
+      const m_good = findMetric(sections.mentor, ['มากกว่า']);
+      const m_low = findMetric(sections.mentor, ['น้อยกว่า']);
+      if (m_total) {
+        const pct = m_total.value > 0 ? (m_good.value / m_total.value) * 100 : 0;
+        cards.push(kpiCard('Mentor', pct, [
+          ['ในระบบ', `${m_total.value} คน`],
+          ['วินัย ≥90%', `${m_good.value} คน`],
+          ['วินัยต่ำ', `${m_low.value} คน`],
+          ['Cheer up', `${sections.mentor.cheer_up?.value || 0}%`]
+        ], '👥'));
+      }
+
+      // Coach
+      const c_total = findMetric(sections.coach, ['อยู่ในระบบมอบหมาย']);
+      const c_good = findMetric(sections.coach, ['ตามเป้าหมาย']);
+      const c_low = findMetric(sections.coach, ['น้อยกว่าเป้าหมาย']);
+      if (c_total) {
+        const pct = c_total.value > 0 ? (c_good.value / c_total.value) * 100 : 0;
+        cards.push(kpiCard('Coach', pct, [
+          ['ในระบบ', `${c_total.value} คน`],
+          ['ตามเป้า', `${c_good.value} คน`],
+          ['ต่ำกว่าเป้า', `${c_low.value} คน`],
+          ['Cheer up', `${sections.coach.cheer_up?.value || 0}%`]
+        ], '🏆'));
+      }
+
+      grid.innerHTML = cards.join('');
+
+      // AP list
+      const apList = document.getElementById('apList');
+      apList.innerHTML = sections.ap.slice(0, 5).map(i => `<li>${i.text}</li>`).join('');
+      if (sections.ap.length > 5) apList.innerHTML += `<li style="background:#edf2f7;color:#718096;text-align:center">...และอีก ${sections.ap.length - 5} ข้อ</li>`;
+
+      // Comments
+      const commentSection = document.getElementById('commentSection');
+      if (sections.comments.length > 0) {
+        document.getElementById('commentsList').innerHTML = sections.comments.slice(0, 4).map(c => `<div class="comment-item">${c.substring(0, 200)}${c.length > 200 ? '...' : ''}</div>`).join('');
+      } else {
+        commentSection.style.display = 'none';
+      }
+    }
+
+    function kpiCard(title, pct, stats, icon, thresholds = { ok: 80, warn: 50 }) {
+      const cls = healthClass(pct, thresholds.ok, thresholds.warn);
+      const statsHtml = stats.map(([label, val]) => `<div class="kpi-stat"><div class="kpi-stat-label">${label}</div><div class="kpi-stat-value">${val}</div></div>`).join('');
+      return `
+        <div class="kpi-card ${cls}">
+          <div class="kpi-title">${icon} ${title} · ${pct.toFixed(1)}%</div>
+          <div class="kpi-progress"><div class="kpi-progress-bar ${cls}" style="width: ${Math.min(100, pct)}%"></div></div>
+          <div class="kpi-stats">${statsHtml}</div>
+        </div>
+      `;
+    }
+
+    function showError(msg) {
+      document.getElementById('loading').style.display = 'none';
+      const eb = document.getElementById('errorBox');
+      eb.textContent = msg;
+      eb.style.display = 'block';
+    }
+
+    // ============ INIT ============
+    fetchData()
+      .then(rows => render(extractData(rows)))
+      .catch(err => showError(err.message));
+  </script>
+</body>
+</html>
