@@ -195,6 +195,21 @@
       font-weight: 500;
     }
     .success-msg.show { display: block; }
+    .btn-change-type {
+      background: #edf2f7;
+      color: #4a5568;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .btn-change-type:hover {
+      background: #e2e8f0;
+      border-color: #a0aec0;
+    }
     .help-text {
       font-size: 12px;
       color: #718096;
@@ -262,13 +277,16 @@
           <div class="section-title">
             สถานะ
           </div>
-          <div class="form-group">
+          <div class="form-group" id="assessmentTypeBlock">
             <label>ประเภทการประเมิน <span class="req">*</span></label>
             <select id="assessmentType" onchange="toggleAssessmentType()">
               <option value="">— เลือกประเภท —</option>
               <option value="status">สถานะการวัดผล</option>
               <option value="course">หลักสูตรที่อบรม</option>
             </select>
+            <button type="button" id="changeTypeBtn" class="btn-change-type" onclick="resetAssessmentType()" style="display: none; margin-top: 8px;">
+              ✏️ เปลี่ยนประเภท
+            </button>
           </div>
 
           <!-- Block 1: สถานะการวัดผล -->
@@ -1007,6 +1025,9 @@
       const statusSel = document.getElementById('status');
       const courseSel = document.getElementById('course');
       const otherCourse = document.getElementById('otherCourse');
+      const typeBlock = document.getElementById('assessmentTypeBlock');
+      const typeSel = document.getElementById('assessmentType');
+      const changeBtn = document.getElementById('changeTypeBtn');
 
       if (type === 'status') {
         statusBlock.style.display = 'block';
@@ -1015,11 +1036,19 @@
         courseSel.value = '';
         otherCourse.value = '';
         document.getElementById('otherCourseGroup').style.display = 'none';
+        // ซ่อน dropdown ประเภท (เลือกแล้ว) + แสดงปุ่มเปลี่ยน
+        typeSel.disabled = true;
+        typeBlock.style.opacity = '0.6';
+        changeBtn.style.display = 'inline-block';
       } else if (type === 'course') {
         statusBlock.style.display = 'none';
         courseBlock.style.display = 'block';
         // reset hidden block values
         statusSel.value = '';
+        // ซ่อน dropdown ประเภท (เลือกแล้ว) + แสดงปุ่มเปลี่ยน
+        typeSel.disabled = true;
+        typeBlock.style.opacity = '0.6';
+        changeBtn.style.display = 'inline-block';
       } else {
         // none selected → hide both
         statusBlock.style.display = 'none';
@@ -1028,7 +1057,16 @@
         courseSel.value = '';
         otherCourse.value = '';
         document.getElementById('otherCourseGroup').style.display = 'none';
+        typeSel.disabled = false;
+        typeBlock.style.opacity = '1';
+        changeBtn.style.display = 'none';
       }
+    }
+
+    // ===== Reset Assessment Type (กลับมาเลือกใหม่) =====
+    function resetAssessmentType() {
+      document.getElementById('assessmentType').value = '';
+      toggleAssessmentType();
     }
 
     // ===== Validate rank 1-6 (real-time disable + ไม่ซ้ำกัน) =====
