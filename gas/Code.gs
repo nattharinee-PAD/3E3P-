@@ -30,9 +30,15 @@ const HONEYPOT_FIELD = 'website_hp';
  * GET → แสดง HTML form จาก GitHub
  */
 function doGet(e) {
-  return HtmlService.createHtmlOutputFromUrl(GITHUB_HTML_URL)
-    .setTitle('แบบฟอร์ม 3E3P (แรงจูงใจ) สมาชิก P5')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  try {
+    const response = UrlFetchApp.fetch('https://raw.githubusercontent.com/nattharinee-PAD/3E3P-/main/gas/index.html');
+    const html = response.getContentText();
+    return HtmlService.createHtmlOutput(html)
+      .setTitle('แบบฟอร์ม 3E3P (แรงจูงใจ) สมาชิก P5')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+  } catch (err) {
+    return HtmlService.createHtmlOutput('<h1>⚠️ Cannot load form</h1><p>' + err.message + '</p>');
+  }
 }
 
 /**
