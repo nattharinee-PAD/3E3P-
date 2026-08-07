@@ -143,8 +143,8 @@ URL: https://nattharinee-PAD.github.io/3E3P-/
 ### 🎯 วิธีใช้
 
 1. **เลือกประเภทการประเมิน** ก่อน → ระบบจะแสดง sub-form ตามที่เลือก
-2. **หลังเลือกแล้ว** → dropdown "ประเภท" จะ **disabled + opacity ลด** + แสดงปุ่ม **"✏️ เปลี่ยนประเภท"**
-3. ถ้าเปลี่ยนใจ → คลิกปุ่ม "✏️ เปลี่ยนประเภท" → dropdown กลับมา enabled + ค่าถูก reset
+2. **หลังเลือกแล้ว** → dropdown "ประเภท" จะ **ซ่อนทั้งหมด** (ไม่แสดงอีก)
+3. ถ้าเปลี่ยนใจ → **refresh หน้าใหม่** (ไม่มีปุ่มเปลี่ยน — เลือกแล้วเลือกเลย)
 
 ### 📋 Options
 
@@ -373,7 +373,7 @@ Section 3 (textarea ≥ 5 chars)
 
 ### ❓ Q3: เลือกประเภทผิด ทำยังไง?
 
-**A:** คลิกปุ่ม **"✏️ เปลี่ยนประเภท"** ที่อยู่ใต้ dropdown → ระบบจะ reset ให้เลือกใหม่
+**A:** **Refresh หน้า** (F5 หรือ reload) — ระบบจะ reset ให้เลือกประเภทใหม่ได้
 
 ### ❓ Q4: Ranking ซ้ำกันได้ไหม?
 
@@ -484,7 +484,8 @@ Deploy time: ~30 วินาที (GitHub Pages rebuild)
 | 7 ส.ค. 2569 | `cd8ebad` | feat: conditional assessment type dropdown |
 | 7 ส.ค. 2569 | `e79d6c0` | rename section title → "สถานะ" |
 | 7 ส.ค. 2569 | `1a2c062` | remove "Every voice matters" banner |
-| 7 ส.ค. 2569 | `881832e` | feat: hide assessment type after selection |
+| 7 ส.ค. 2569 | `881832e` | feat: hide assessment type after selection (disabled + opacity) |
+| 7 ส.ค. 2569 | `52768d5` | fix: FULLY hide assessment type (display: none) + remove change button |
 
 ---
 
