@@ -3,6 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; frame-ancestors 'none'; form-action 'self'; base-uri 'self';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="no-referrer">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=(), payment=()">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
   <title>แบบประเมิน 3E3P (แรงจูงใจ) — PKG</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -233,6 +239,12 @@
       </div>
 
       <form id="motivationForm" autocomplete="off">
+        <!-- Honeypot (anti-bot) — ต้องเว้นว่าง -->
+        <div style="position: absolute; left: -9999px; top: -9999px;" aria-hidden="true">
+          <label for="website_hp">Website (leave blank)</label>
+          <input type="text" id="website_hp" name="website_hp" tabindex="-1" autocomplete="off">
+        </div>
+        <input type="hidden" id="form_load_time" name="form_load_time">
         <!-- Section 0: ข้อมูลสมาชิก -->
         <div class="section">
           <div class="section-title">
@@ -446,6 +458,10 @@
 
         <button type="submit" class="submit-btn" id="submitBtn">ส่งข้อมูล</button>
       </form>
+      <script nonce="3e3p-form">
+        // Set form load time (anti-bot: form submitted too fast = bot)
+        document.getElementById('form_load_time').value = Date.now();
+      </script>
     </div>
   </div>
 
@@ -1085,7 +1101,43 @@
       e.preventDefault();
       const submitBtn = document.getElementById('submitBtn');
 
+      // ===== Anti-bot: Honeypot check =====
+      if (document.getElementById('website_hp').value !== '') {
+        console.warn('🤖 Bot detected (honeypot)');
+        return; // silently reject
+      }
+
+      // ===== Anti-bot: Form load time (too fast = bot, too slow = session hijack) =====
+      const loadTime = parseInt(document.getElementById('form_load_time').value);
+      const elapsed = Date.now() - loadTime;
+      if (elapsed < 3000) { // < 3 วินาที = น่าจะบอท
+        alert('กรุณากรอกข้อมูลให้ครบถ้วนก่อนส่ง');
+        return;
+      }
+      if (elapsed > 1800000) { // > 30 นาที = session เก่า
+        alert('ฟอร์มหมดอายุ กรุณา refresh แล้วกรอกใหม่');
+        location.reload();
+        return;
+      }
+
+      // ===== Rate limit per session (max 5 submits per 10 min) =====
+      const now = Date.now();
+      const rateKey = '3e3p_submit_log';
+      let log = JSON.parse(sessionStorage.getItem(rateKey) || '[]');
+      log = log.filter(t => now - t < 600000); // keep last 10 min only
+      if (log.length >= 5) {
+        alert('คุณส่งข้อมูลบ่อยเกินไป กรุณารอสักครู่');
+        return;
+      }
+
       const memberId = document.getElementById('memberId').value.trim();
+      // ===== Member ID validation (format) =====
+      if (!/^\d{7}$/.test(memberId)) {
+        alert('รหัสสมาชิกต้องเป็นตัวเลข 7 หลัก');
+        document.getElementById('memberId').focus();
+        return;
+      }
+
       const memberName = document.getElementById('memberName').value.trim();
       const memberBU = document.getElementById('memberBU').value.trim();
       const assessmentType = document.getElementById('assessmentType').value;
@@ -1171,6 +1223,11 @@
       submitBtn.innerHTML = '<span class="loading"></span>กำลังส่งข้อมูล...';
 
       console.log('📤 Submit payload:', payload);
+
+      // ===== Record rate limit =====
+      log.push(now);
+      sessionStorage.setItem(rateKey, JSON.stringify(log));
+
       await new Promise(r => setTimeout(r, 1000));
 
       document.getElementById('successMsg').classList.add('show');
