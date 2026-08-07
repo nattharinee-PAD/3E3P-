@@ -264,36 +264,52 @@
             สถานะ / หลักสูตรที่อบรม ของคุณ
           </div>
           <div class="form-group">
-            <label>สถานะ</label>
-            <select id="status">
-              <option value="">— เลือกสถานะ —</option>
-              <option value="สมาชิกกรายวัน">สมาชิกกรายวัน</option>
-              <option value="สมาชิกสัญญาจ้าง 1 เดือน">สมาชิกสัญญาจ้าง 1 เดือน</option>
-              <option value="สมาชิกสัญญาจ้าง 2 เดือน">สมาชิกสัญญาจ้าง 2 เดือน</option>
-              <option value="สมาชิกสัญญาจ้าง 3 เดือน">สมาชิกสัญญาจ้าง 3 เดือน</option>
-              <option value="สมาชิกสัญญาจ้าง 6 เดือน">สมาชิกสัญญาจ้าง 6 เดือน</option>
-              <option value="ทดลองงาน">ทดลองงาน</option>
-              <option value="โอนย้ายสาขา JOB ใหม่">โอนย้ายสาขา JOB ใหม่</option>
-              <option value="เลื่อนตำแหน่ง">เลื่อนตำแหน่ง</option>
-              <option value="จับคู่คนกับงาน(พัฒนาศักยภาพ)">จับคู่คนกับงาน(พัฒนาศักยภาพ)</option>
+            <label>ประเภทการประเมิน <span class="req">*</span></label>
+            <select id="assessmentType" onchange="toggleAssessmentType()">
+              <option value="">— เลือกประเภท —</option>
+              <option value="status">สถานะการวัดผล</option>
+              <option value="course">หลักสูตรที่อบรม</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>หลักสูตรที่อบรม</label>
-            <select id="course" onchange="toggleOtherCourse()">
-              <option value="">— เลือกหลักสูตร —</option>
-              <option value="ปฐมนิเทศ Mini">หลักสูตร ปฐมนิเทศ Mini</option>
-              <option value="ทุติยนิเทศ">หลักสูตร ทุติยนิเทศ</option>
-              <option value="ตติยนิเทศ">หลักสูตร ตติยนิเทศ</option>
-              <option value="จตุรนิเทศ">หลักสูตร จตุรนิเทศ</option>
-              <option value="ปัญจนิเทศ">หลักสูตร ปัญจนิเทศ</option>
-              <option value="ภาวะผู้นำ">หลักสูตร ภาวะผู้นำ</option>
-              <option value="อื่นๆ">หลักสูตร อื่นๆ</option>
-            </select>
+
+          <!-- Block 1: สถานะการวัดผล -->
+          <div id="statusBlock" style="display: none;">
+            <div class="form-group">
+              <label>สถานะการวัดผล <span class="req">*</span></label>
+              <select id="status">
+                <option value="">— เลือกสถานะการวัดผล —</option>
+                <option value="สมาชิกกรายวัน">สมาชิกกรายวัน</option>
+                <option value="สมาชิกสัญญาจ้าง 1 เดือน">สมาชิกสัญญาจ้าง 1 เดือน</option>
+                <option value="สมาชิกสัญญาจ้าง 2 เดือน">สมาชิกสัญญาจ้าง 2 เดือน</option>
+                <option value="สมาชิกสัญญาจ้าง 3 เดือน">สมาชิกสัญญาจ้าง 3 เดือน</option>
+                <option value="สมาชิกสัญญาจ้าง 6 เดือน">สมาชิกสัญญาจ้าง 6 เดือน</option>
+                <option value="ทดลองงาน">ทดลองงาน</option>
+                <option value="โอนย้ายสาขา JOB ใหม่">โอนย้ายสาขา JOB ใหม่</option>
+                <option value="เลื่อนตำแหน่ง">เลื่อนตำแหน่ง</option>
+                <option value="จับคู่คนกับงาน(พัฒนาศักยภาพ)">จับคู่คนกับงาน(พัฒนาศักยภาพ)</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group" id="otherCourseGroup" style="display: none;">
-            <label>ระบุชื่อหลักสูตรอื่นๆ</label>
-            <input type="text" id="otherCourse" placeholder="เช่น หลักสูตรพัฒนาทักษะเฉพาะทาง">
+
+          <!-- Block 2: หลักสูตรที่อบรม -->
+          <div id="courseBlock" style="display: none;">
+            <div class="form-group">
+              <label>หลักสูตรที่อบรม <span class="req">*</span></label>
+              <select id="course" onchange="toggleOtherCourse()">
+                <option value="">— เลือกหลักสูตร —</option>
+                <option value="ปฐมนิเทศ Mini">หลักสูตร ปฐมนิเทศ Mini</option>
+                <option value="ทุติยนิเทศ">หลักสูตร ทุติยนิเทศ</option>
+                <option value="ตติยนิเทศ">หลักสูตร ตติยนิเทศ</option>
+                <option value="จตุรนิเทศ">หลักสูตร จตุรนิเทศ</option>
+                <option value="ปัญจนิเทศ">หลักสูตร ปัญจนิเทศ</option>
+                <option value="ภาวะผู้นำ">หลักสูตร ภาวะผู้นำ</option>
+                <option value="อื่นๆ">หลักสูตร อื่นๆ</option>
+              </select>
+            </div>
+            <div class="form-group" id="otherCourseGroup" style="display: none;">
+              <label>ระบุชื่อหลักสูตรอื่นๆ</label>
+              <input type="text" id="otherCourse" placeholder="เช่น หลักสูตรพัฒนาทักษะเฉพาะทาง">
+            </div>
           </div>
         </div>
 
@@ -984,6 +1000,38 @@
       otherGroup.style.display = course === 'อื่นๆ' ? 'block' : 'none';
     }
 
+    // ===== Toggle Assessment Type (Section 0.5) =====
+    function toggleAssessmentType() {
+      const type = document.getElementById('assessmentType').value;
+      const statusBlock = document.getElementById('statusBlock');
+      const courseBlock = document.getElementById('courseBlock');
+      const statusSel = document.getElementById('status');
+      const courseSel = document.getElementById('course');
+      const otherCourse = document.getElementById('otherCourse');
+
+      if (type === 'status') {
+        statusBlock.style.display = 'block';
+        courseBlock.style.display = 'none';
+        // reset hidden block values
+        courseSel.value = '';
+        otherCourse.value = '';
+        document.getElementById('otherCourseGroup').style.display = 'none';
+      } else if (type === 'course') {
+        statusBlock.style.display = 'none';
+        courseBlock.style.display = 'block';
+        // reset hidden block values
+        statusSel.value = '';
+      } else {
+        // none selected → hide both
+        statusBlock.style.display = 'none';
+        courseBlock.style.display = 'none';
+        statusSel.value = '';
+        courseSel.value = '';
+        otherCourse.value = '';
+        document.getElementById('otherCourseGroup').style.display = 'none';
+      }
+    }
+
     // ===== Validate rank 1-6 (real-time disable + ไม่ซ้ำกัน) =====
     function validateRank() {
       const errorEl = document.getElementById('rankError');
@@ -1033,6 +1081,7 @@
       const memberId = document.getElementById('memberId').value.trim();
       const memberName = document.getElementById('memberName').value.trim();
       const memberBU = document.getElementById('memberBU').value.trim();
+      const assessmentType = document.getElementById('assessmentType').value;
       const status = document.getElementById('status').value;
       const course = document.getElementById('course').value;
       const otherCourse = document.getElementById('otherCourse').value.trim();
@@ -1049,8 +1098,19 @@
         document.getElementById('memberId').focus();
         return;
       }
-      if (!status && !course) {
-        alert('กรุณาเลือกอย่างน้อย 1 อย่าง (สถานะ หรือ หลักสูตรที่อบรม)');
+      if (!assessmentType) {
+        alert('กรุณาเลือกประเภทการประเมิน (สถานะการวัดผล หรือ หลักสูตรที่อบรม)');
+        document.getElementById('assessmentType').focus();
+        return;
+      }
+      if (assessmentType === 'status' && !status) {
+        alert('กรุณาเลือกสถานะการวัดผล');
+        document.getElementById('status').focus();
+        return;
+      }
+      if (assessmentType === 'course' && !course) {
+        alert('กรุณาเลือกหลักสูตรที่อบรม');
+        document.getElementById('course').focus();
         return;
       }
       if (course === 'อื่นๆ' && !otherCourse) {
@@ -1090,6 +1150,7 @@
         member_id: memberId,
         member_name: memberName,
         bu: memberBU,
+        assessment_type: assessmentType,
         status: status,
         course: course,
         course_other: course === 'อื่นๆ' ? otherCourse : '',
