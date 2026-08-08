@@ -271,59 +271,6 @@
       font-variant-numeric: tabular-nums;
       font-weight: 600;
     }
-    /* === ToE Section === */
-    .toe-section {
-      margin-top: 32px;
-      padding-top: 24px;
-      border-top: 2px dashed #cbd5e0;
-    }
-    .toe-section h3 {
-      font-size: 18px;
-      margin-bottom: 12px;
-      color: #2d3748;
-    }
-    .toe-formula {
-      font-size: 13px;
-      color: #4a5568;
-      background: #f7fafc;
-      padding: 10px 14px;
-      border-radius: 8px;
-      border-left: 4px solid #0066ff;
-      margin-bottom: 16px;
-      font-family: 'Sarabun', monospace;
-    }
-    .toe-badge-wrap {
-      margin: 24px auto 0;
-      max-width: 480px;
-      padding: 20px;
-      border-radius: 12px;
-      text-align: center;
-      background: #f7fafc;
-      border: 3px solid #cbd5e0;
-      transition: all 0.3s;
-    }
-    .toe-badge-wrap.tier-self   { background: linear-gradient(135deg, #c6f6d5 0%, #bee3f8 100%); border-color: #48bb78; }
-    .toe-badge-wrap.tier-mixed   { background: linear-gradient(135deg, #fefcbf 0%, #fef9c3 100%); border-color: #ecc94b; }
-    .toe-badge-wrap.tier-compliance { background: linear-gradient(135deg, #fed7aa 0%, #feebc8 100%); border-color: #ed8936; }
-    .toe-badge-wrap.tier-disengaged { background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%); border-color: #f56565; }
-    .toe-score {
-      font-size: 36px;
-      font-weight: 800;
-      color: #2d3748;
-      font-variant-numeric: tabular-nums;
-    }
-    .toe-label {
-      font-size: 20px;
-      font-weight: 700;
-      color: #2d3748;
-      margin-top: 4px;
-    }
-    .toe-detail {
-      font-size: 13px;
-      color: #4a5568;
-      margin-top: 8px;
-      line-height: 1.5;
-    }
     .error-msg {
       color: #e53e3e;
       font-size: 12px;
@@ -617,25 +564,6 @@
             <canvas id="radarCanvas"></canvas>
           </div>
           <table class="radar-table" id="radarTable"></table>
-
-          <!-- Radar Chart #2: ToE (Direct vs Indirect) -->
-          <div class="toe-section">
-            <h3>🎯 Chart #2 · ToE (Theory of Engagement)</h3>
-            <div class="toe-formula">
-              <b>Direct</b> = A + B + C &nbsp;|&nbsp; <b>Indirect</b> = D + E + F &nbsp;|&nbsp;
-              <b>ToE Score</b> = Direct − Indirect
-            </div>
-            <div class="radar-canvas-wrap">
-              <canvas id="toeCanvas"></canvas>
-            </div>
-
-            <!-- ToE Score Badge -->
-            <div class="toe-badge-wrap" id="toeBadgeWrap" style="display:none;">
-              <div class="toe-score" id="toeScore">0.00</div>
-              <div class="toe-label" id="toeLabel">—</div>
-              <div class="toe-detail" id="toeDetail">—</div>
-            </div>
-          </div>
         </div>
 
         <button type="submit" class="submit-btn" id="submitBtn">ส่งข้อมูล</button>
@@ -1397,11 +1325,6 @@
         motivation_weighted: weighted,      // {A:50, B:15, C:6.64, ...}
         motivation_total: totalScore,        // = 166.60 max
         motivation_max: MAX_TOTAL,
-        // ===== ToE (Theory of Engagement) =====
-        toe_direct: (weighted.A || 0) + (weighted.B || 0) + (weighted.C || 0),
-        toe_indirect: (weighted.D || 0) + (weighted.E || 0) + (weighted.F || 0),
-        toe_score: +(((weighted.A || 0) + (weighted.B || 0) + (weighted.C || 0)) -
-                     ((weighted.D || 0) + (weighted.E || 0) + (weighted.F || 0))).toFixed(2),
         source: '3E3P_Form_v2'
       };
 
@@ -1510,107 +1433,6 @@
       </tr>`;
       html += '</tbody>';
       table.innerHTML = html;
-
-      // ===== Render ToE Chart #2 + Badge =====
-      renderToE(weighted);
-    }
-
-    // ===== ToE Classification =====
-    //   > 40   → Self-driven      (Self-driven)
-    //  10–40   → Mixed            (ผสม)
-    //  -10–10  → Compliance       (การปฏิบัติตาม)
-    //   < -10  → Disengaged       (ไม่ผูกพัน)
-    const TOE_TIERS = [
-      { min: 40,  label: 'Self-driven 🟢',    thai: 'ขับเคลื่อนด้วยตนเอง',  cls: 'tier-self',       detail: 'มีแรงขับจากภายในสูง ทำงานเพราะอยากทำ เห็นคุณค่าและความหมายของงาน' },
-      { min: 10,  label: 'Mixed 🟡',          thai: 'ผสม',                 cls: 'tier-mixed',      detail: 'มีแรงจูงใจทั้งจากภายในและภายนอก ทั้งอยากทำและมีปัจจัยภายนอกเข้ามากระตุ้น' },
-      { min: -10, label: 'Compliance 🟠',     thai: 'การปฏิบัติตาม',       cls: 'tier-compliance', detail: 'ทำเพราะเป็นหน้าที่หรือกติกา ทำตามสิ่งที่องค์กรกำหนด แต่แรงขับจากภายในยังไม่สูง' },
-      { min: -Infinity, label: 'Disengaged 🔴', thai: 'ไม่ผูกพัน / ถอยห่าง', cls: 'tier-disengaged', detail: 'ขาดแรงจูงใจและความผูกพันกับงาน ทำงานเพราะถูกบีบหรือไม่มีเหตุผลที่อยากทำต่อ' }
-    ];
-
-    function classifyToE(score) {
-      for (const tier of TOE_TIERS) {
-        if (score >= tier.min) return tier;
-      }
-      return TOE_TIERS[TOE_TIERS.length - 1];
-    }
-
-    // ===== ToE Chart Renderer =====
-    let toeChart = null;
-    function renderToE(weighted) {
-      // Direct = A + B + C, Indirect = D + E + F
-      const direct = (weighted.A || 0) + (weighted.B || 0) + (weighted.C || 0);
-      const indirect = (weighted.D || 0) + (weighted.E || 0) + (weighted.F || 0);
-      const toeScore = +(direct - indirect).toFixed(2);
-      const tier = classifyToE(toeScore);
-
-      // === Render Chart #2 (Direct vs Indirect, 2 เส้น 2 สี) ===
-      const ctx = document.getElementById('toeCanvas').getContext('2d');
-      if (toeChart) toeChart.destroy();
-      toeChart = new Chart(ctx, {
-        type: 'radar',
-        data: {
-          labels: ['A: สนุกสนาน', 'B: ตอบโจทย์', 'C: ใช้ความสามารถ', 'D: หน้าที่', 'E: ค่าตอบแทน', 'F: ไม่มี'],
-          datasets: [
-            {
-              label: '🟦 Direct (A+B+C)',
-              data: [weighted.A || 0, weighted.B || 0, weighted.C || 0, 0, 0, 0],
-              backgroundColor: 'rgba(0, 102, 255, 0.20)',
-              borderColor: '#0066ff',
-              borderWidth: 2,
-              pointBackgroundColor: '#0066ff',
-              pointRadius: 5
-            },
-            {
-              label: '🟥 Indirect (D+E+F)',
-              data: [0, 0, 0, weighted.D || 0, weighted.E || 0, weighted.F || 0],
-              backgroundColor: 'rgba(228, 3, 3, 0.20)',
-              borderColor: '#e40303',
-              borderWidth: 2,
-              pointBackgroundColor: '#e40303',
-              pointRadius: 5
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          scales: {
-            r: {
-              min: 0,
-              max: 50,
-              ticks: { stepSize: 10, backdropColor: 'transparent' },
-              pointLabels: {
-                font: { size: 13, weight: 'bold' },
-                color: '#2d3748'
-              }
-            }
-          },
-          plugins: {
-            legend: { display: true, position: 'bottom' },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => {
-                  const val = ctx.parsed.r;
-                  if (val === 0) return null;
-                  return `${ctx.dataset.label}: ${val.toFixed(2)}`;
-                }
-              }
-            }
-          }
-        }
-      });
-
-      // === Render ToE Badge ===
-      const wrap = document.getElementById('toeBadgeWrap');
-      wrap.classList.remove('tier-self', 'tier-mixed', 'tier-compliance', 'tier-disengaged');
-      wrap.classList.add(tier.cls);
-      document.getElementById('toeScore').textContent = toeScore.toFixed(2);
-      document.getElementById('toeLabel').textContent = `${tier.label} · ${tier.thai}`;
-      document.getElementById('toeDetail').textContent = tier.detail;
-      wrap.style.display = 'block';
-
-      // Return for downstream (e.g., GAS payload)
-      return { direct, indirect, toeScore, tier: tier.label };
     }
   </script>
   <!-- Chart.js (radar) — CDN allowed via CSP script-src -->
