@@ -1400,19 +1400,18 @@
       document.getElementById('radarWrap').classList.add('show');
       document.getElementById('successMsg').classList.add('show');
 
-      console.log('📊 Charts shown - waiting 15s before reset');
+      console.log('📊 Charts shown - จะอยู่ตลอดจนกว่า user จะ refresh');
 
       // Wait for Chart.js animation to settle, then scroll
       await new Promise(r => setTimeout(r, 500));
       document.getElementById('radarWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      // รอ 15 วินาทีให้ user ดู Chart #1 + Chart #2 + ToE Badge
-      await new Promise(r => setTimeout(r, 15000));
+      // รอ 2 วินาทีให้ user ดู chart แล้วปลดล็อกปุ่ม
+      await new Promise(r => setTimeout(r, 2000));
 
-      console.log('⏰ 15s elapsed - hiding charts now');
+      console.log('⏰ 2s elapsed - ปลดล็อกปุ่มส่ง (chart ยังอยู่)');
 
-      // ซ่อน Chart เท่านั้น (ไม่ reset form เพื่อหลีกเลี่ยงบั๊ก)
-      document.getElementById('radarWrap').classList.remove('show');
+      // ปลดล็อกปุ่มเท่านั้น (chart ยังอยู่ถาวร — user ต้อง refresh ถ้าจะกรอกใหม่)
       submitBtn.disabled = false;
       submitBtn.innerHTML = '🏳️‍🌈 ส่งข้อมูล';
       // successMsg ซ่อนเร็วกว่า chart (กันรก UI)
