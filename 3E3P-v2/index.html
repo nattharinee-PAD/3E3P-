@@ -1177,13 +1177,49 @@
     ];
     const MAX_TOTAL = RATING_ITEMS.reduce((s, it) => s + (5 * it.weight), 0); // = 166.60
 
-    // Visual: toggle label.checked class for rating radio buttons
+    // Visual: toggle label.checked class + render Radar Chart real-time
+    function collectScores() {
+      const scores = {};
+      let hasAny = false;
+      RATING_ITEMS.forEach(item => {
+        const checked = document.querySelector(`input[name="rating_${item.key}"]:checked`);
+        if (checked) {
+          scores[item.key] = parseInt(checked.value, 10);
+          hasAny = true;
+        } else {
+          scores[item.key] = 0;
+        }
+      });
+      return { scores, hasAny };
+    }
+
+    function computeWeighted(scores) {
+      const weighted = {};
+      let totalScore = 0;
+      RATING_ITEMS.forEach(item => {
+        const w = (scores[item.key] || 0) * item.weight;
+        weighted[item.key] = +w.toFixed(2);
+        totalScore += w;
+      });
+      return { weighted, totalScore: +totalScore.toFixed(2) };
+    }
+
     document.querySelectorAll('.rating-scale input[type="radio"]').forEach(radio => {
       radio.addEventListener('change', () => {
         const name = radio.name; // rating_A, rating_B, ...
         document.querySelectorAll(`input[name="${name}"] + label`).forEach(l => l.classList.remove('checked'));
         const lbl = radio.nextElementSibling;
         if (lbl) lbl.classList.add('checked');
+
+        // ===== Real-time Radar Chart =====
+        const { scores, hasAny } = collectScores();
+        if (hasAny) {
+          const { weighted, totalScore } = computeWeighted(scores);
+          renderRadar(scores, weighted, totalScore);
+          document.getElementById('radarWrap').classList.add('show');
+        } else {
+          document.getElementById('radarWrap').classList.remove('show');
+        }
       });
     });
 
@@ -1263,32 +1299,17 @@
       }
 
       // ===== Rating validation (ครบ 6 ข้อ) =====
-      const scores = {};
-      let missing = false;
-      RATING_ITEMS.forEach(item => {
-        const checked = document.querySelector(`input[name="rating_${item.key}"]:checked`);
-        if (!checked) { missing = true; return; }
-        scores[item.key] = parseInt(checked.value, 10);
-      });
-      if (missing) {
+      const { scores, hasAny } = collectScores();
+      if (!hasAny) {
         document.getElementById('ratingError').classList.add('show');
-        document.querySelector('.section-title:has(.badge)') && document.querySelector('.section').scrollIntoView({ behavior: 'smooth' });
         alert('กรุณาให้คะแนนให้ครบทุก 6 ข้อ');
         return;
       } else {
         document.getElementById('ratingError').classList.remove('show');
       }
 
-      // ===== Weighted scores =====
-      const weighted = {};
-      let totalScore = 0;
-      RATING_ITEMS.forEach(item => {
-        const raw = scores[item.key] || 0;
-        const w = raw * item.weight;
-        weighted[item.key] = +w.toFixed(2);
-        totalScore += w;
-      });
-      totalScore = +totalScore.toFixed(2);
+      // ===== Weighted scores (reuse helper) =====
+      const { weighted, totalScore } = computeWeighted(scores);
 
       const payload = {
         submission_id: 'sub_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
