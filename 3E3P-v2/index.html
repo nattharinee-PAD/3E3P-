@@ -334,6 +334,33 @@
       cursor: not-allowed;
       transform: none;
     }
+    .button-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 16px;
+    }
+    .refresh-btn {
+      padding: 14px 18px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #2d3748;
+      background: #e2e8f0;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .refresh-btn:hover {
+      background: #cbd5e0;
+      border-color: #a0aec0;
+      transform: translateY(-1px);
+    }
+    .refresh-btn:active {
+      transform: translateY(0);
+    }
     .success-msg {
       display: none;
       background: linear-gradient(135deg, #c6f6d5 0%, #bee3f8 100%);
@@ -616,7 +643,10 @@
           </div>
         </div>
 
-        <button type="submit" class="submit-btn" id="submitBtn">ส่งข้อมูล</button>
+        <div class="button-row">
+          <button type="button" class="refresh-btn" id="refreshBtn">🔄 เริ่มใหม่</button>
+          <button type="submit" class="submit-btn" id="submitBtn">ส่งข้อมูล</button>
+        </div>
       </form>
       <script nonce="3e3p-form">
         // Set form load time (anti-bot: form submitted too fast = bot)
@@ -1262,6 +1292,13 @@
         if (lbl) lbl.classList.add('checked');
         // Note: Chart จะแสดงหลังกดส่งข้อมูล (ตามคำสั่งลูกหมี)
       });
+    });
+
+    // ===== Refresh button: refresh หน้า (reset ทั้งหมด) =====
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      if (confirm('ต้องการเริ่มใหม่? ข้อมูลที่ยังไม่ได้ส่งจะหายไป')) {
+        location.reload();
+      }
     });
 
     // ===== Submit =====
