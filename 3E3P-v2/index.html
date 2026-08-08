@@ -250,27 +250,6 @@
       max-width: 480px;
       margin: 0 auto;
     }
-    .radar-table {
-      margin-top: 16px;
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-    .radar-table th, .radar-table td {
-      padding: 8px 10px;
-      border-bottom: 1px solid #edf2f7;
-      text-align: left;
-    }
-    .radar-table th {
-      background: #f7fafc;
-      font-weight: 600;
-      color: #4a5568;
-    }
-    .radar-table td.num {
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-      font-weight: 600;
-    }
     .error-msg {
       color: #e53e3e;
       font-size: 12px;
@@ -563,7 +542,6 @@
           <div class="radar-canvas-wrap">
             <canvas id="radarCanvas"></canvas>
           </div>
-          <table class="radar-table" id="radarTable"></table>
         </div>
 
         <button type="submit" class="submit-btn" id="submitBtn">ส่งข้อมูล</button>
@@ -1414,25 +1392,6 @@
           }
         }
       });
-
-      // Build detail table
-      const table = document.getElementById('radarTable');
-      let html = '<thead><tr><th>ข้อ</th><th>ข้อความ</th><th>คะแนน</th><th>× น้ำหนัก</th><th>สุทธิ</th></tr></thead><tbody>';
-      RATING_ITEMS.forEach(item => {
-        html += `<tr>
-          <td><b>${item.key}</b></td>
-          <td>${item.text}</td>
-          <td class="num">${scores[item.key]}/5</td>
-          <td class="num">× ${item.weight}</td>
-          <td class="num">${weighted[item.key].toFixed(2)}</td>
-        </tr>`;
-      });
-      html += `<tr style="background:#fef9e7;font-weight:600;">
-        <td colspan="4" style="text-align:right;">รวมคะแนนสุทธิ</td>
-        <td class="num">${totalScore.toFixed(2)} / ${MAX_TOTAL.toFixed(2)}</td>
-      </tr>`;
-      html += '</tbody>';
-      table.innerHTML = html;
     }
   </script>
   <!-- Chart.js (radar) — CDN allowed via CSP script-src -->
