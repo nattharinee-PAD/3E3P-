@@ -121,7 +121,7 @@ function doPost(e) {
 
 /**
  * บันทึก submission ลง Sheet (gid=634702585)
- * Payload v4: motivation_rating + motivation_weighted + total
+ * Payload v5: + ToE (direct/indirect/score/tier) + Chart PNG (base64)
  */
 function saveSubmission(data) {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -143,15 +143,17 @@ function saveSubmission(data) {
     ? Object.keys(RATING_WEIGHTS).map(k => `${k}:${(data.motivation_weighted[k] || 0).toFixed(2)}`).join(',')
     : '';
 
-  // Ensure header row (v4)
+  // Ensure header row (v5 — 6 new columns)
   ensureHeader_(sheet, [
     'submission_id', 'timestamp', 'member_id', 'member_name', 'bu',
     'assessment_type', 'status', 'course', 'course_other',
     'motivation_rating', 'motivation_weighted', 'motivation_total', 'motivation_max',
+    'toe_direct', 'toe_indirect', 'toe_score', 'toe_tier',
+    'chart_1_image', 'chart_2_image',
     'source'
   ]);
 
-  // Append row (14 cols)
+  // Append row (20 cols — v5)
   sheet.appendRow([
     submissionId,
     data.timestamp || new Date().toISOString(),
@@ -166,6 +168,14 @@ function saveSubmission(data) {
     weightedStr,
     data.motivation_total || 0,
     data.motivation_max || 166.60,
+    // ===== ToE (v5) =====
+    data.toe_direct || 0,
+    data.toe_indirect || 0,
+    data.toe_score || 0,
+    data.toe_tier || '',
+    // ===== Chart Images (v5) =====
+    data.chart_1_image || '',
+    data.chart_2_image || '',
     data.source || '3E3P_Form_v2'
   ]);
 
