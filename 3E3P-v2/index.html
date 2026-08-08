@@ -1404,8 +1404,8 @@
       await new Promise(r => setTimeout(r, 500));
       document.getElementById('radarWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-      // Reset form หลังจาก user เห็น chart แล้ว
-      await new Promise(r => setTimeout(r, 4000));
+      // รอ 15 วินาทีให้ user ดู Chart #1 + Chart #2 + ToE Badge
+      await new Promise(r => setTimeout(r, 15000));
 
       document.getElementById('motivationForm').reset();
       document.getElementById('memberName').value = '';
@@ -1418,6 +1418,7 @@
       document.getElementById('radarWrap').classList.remove('show');
       submitBtn.disabled = false;
       submitBtn.innerHTML = '🏳️‍🌈 ส่งข้อมูล';
+      // successMsg ซ่อนเร็วกว่า chart (กันรก UI)
       setTimeout(() => {
         document.getElementById('successMsg').classList.remove('show');
       }, 3000);
