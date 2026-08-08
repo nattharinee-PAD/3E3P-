@@ -1400,6 +1400,8 @@
       document.getElementById('radarWrap').classList.add('show');
       document.getElementById('successMsg').classList.add('show');
 
+      console.log('📊 Charts shown - waiting 15s before reset');
+
       // Wait for Chart.js animation to settle, then scroll
       await new Promise(r => setTimeout(r, 500));
       document.getElementById('radarWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1407,14 +1409,9 @@
       // รอ 15 วินาทีให้ user ดู Chart #1 + Chart #2 + ToE Badge
       await new Promise(r => setTimeout(r, 15000));
 
-      document.getElementById('motivationForm').reset();
-      document.getElementById('memberName').value = '';
-      document.getElementById('memberName').placeholder = '— รอกรอกรหัส —';
-      document.getElementById('memberName').classList.remove('error');
-      document.getElementById('memberBU').value = '';
-      document.getElementById('memberBU').placeholder = '—';
-      document.getElementById('memberBU').classList.remove('error');
-      document.querySelectorAll('.rating-scale label').forEach(l => l.classList.remove('checked'));
+      console.log('⏰ 15s elapsed - hiding charts now');
+
+      // ซ่อน Chart เท่านั้น (ไม่ reset form เพื่อหลีกเลี่ยงบั๊ก)
       document.getElementById('radarWrap').classList.remove('show');
       submitBtn.disabled = false;
       submitBtn.innerHTML = '🏳️‍🌈 ส่งข้อมูล';
