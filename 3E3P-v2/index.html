@@ -643,8 +643,8 @@
         </div>
 
         <div class="button-row">
-          <button type="button" class="refresh-btn" id="refreshBtn">🔄 เริ่มใหม่</button>
-          <button type="submit" class="submit-btn" id="submitBtn">ส่งข้อมูล</button>
+          <button type="button" class="refresh-btn" id="refreshBtn">Refresh</button>
+          <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
         </div>
       </form>
       <script nonce="3e3p-form">
@@ -1411,7 +1411,7 @@
       };
 
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="loading"></span>กำลังส่งข้อมูล...';
+      submitBtn.innerHTML = '<span class="loading"></span>Submitting...';
 
       console.log('📤 Submit payload:', payload);
 
@@ -1454,7 +1454,7 @@
 
       // ปลดล็อกปุ่มเท่านั้น (chart ยังอยู่ถาวร — user ต้อง refresh ถ้าจะกรอกใหม่)
       submitBtn.disabled = false;
-      submitBtn.innerHTML = '🏳️‍🌈 ส่งข้อมูล';
+      submitBtn.innerHTML = 'Submit';
       // successMsg ซ่อนเร็วกว่า chart (กันรก UI)
       setTimeout(() => {
         document.getElementById('successMsg').classList.remove('show');
