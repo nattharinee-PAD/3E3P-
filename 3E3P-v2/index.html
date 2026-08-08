@@ -1295,9 +1295,14 @@
     });
 
     // ===== Refresh button: refresh หน้า (reset ทั้งหมด) =====
-    document.getElementById('refreshBtn').addEventListener('click', () => {
-      if (confirm('ต้องการเริ่มใหม่? ข้อมูลที่ยังไม่ได้ส่งจะหายไป')) {
-        location.reload();
+    document.getElementById('refreshBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      console.log('🔄 Refresh button clicked');
+      if (window.confirm('ต้องการเริ่มใหม่? ข้อมูลที่ยังไม่ได้ส่งจะหายไป')) {
+        console.log('✅ User confirmed - reloading...');
+        window.location.reload();
+      } else {
+        console.log('❌ User cancelled');
       }
     });
 
