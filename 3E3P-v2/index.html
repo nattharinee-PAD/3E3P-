@@ -14,8 +14,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Sarabun', 'Tahoma', sans-serif;
-      background: linear-gradient(135deg, #fbbf24 0%, #fcd34d 25%, #86efac 60%, #38a169 100%);
-      background-attachment: fixed;
+      background: #ffffff;
       min-height: 100vh;
       padding: 20px;
       color: #2d2d2d;
@@ -27,26 +26,18 @@
       border-radius: 16px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.15);
       overflow: hidden;
-      border-top: 6px solid;
-      border-image: linear-gradient(to right,
-        #e40303 0%, #e40303 16.66%,
-        #ff8c00 16.66%, #ff8c00 33.33%,
-        #ffed00 33.33%, #ffed00 50%,
-        #008018 50%, #008018 66.66%,
-        #0066ff 66.66%, #0066ff 83.33%,
-        #732982 83.33%, #732982 100%) 1;
+      border-top: 4px solid #1e40af;
     }
     .header {
-      background: linear-gradient(135deg,
-        #e40303 0%, #ff8c00 20%, #ffed00 40%,
-        #008018 60%, #0066ff 80%, #732982 100%);
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
       color: white;
       padding: 32px 24px;
       text-align: center;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 16px rgba(30, 58, 138, 0.3);
     }
-    .header h1 { font-size: 28px; margin-bottom: 8px; }
-    .header p { font-size: 14px; opacity: 0.9; }
+    .header h1 { font-size: 28px; margin-bottom: 8px; font-weight: 800; }
+    .header p { font-size: 14px; opacity: 0.95; font-weight: 500; }
     .form-body { padding: 32px 24px; }
     .section { margin-bottom: 32px; }
     .section-title {
