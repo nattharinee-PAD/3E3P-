@@ -390,31 +390,73 @@
       color: #4a5568;
       line-height: 1.5;
     }
+    .info-box-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 6px;
+      margin-top: 10px;
+    }
+    .info-box-table th {
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 10px;
+      text-align: left;
+      border-radius: 6px;
+    }
+    .info-box-table th.col-p {
+      background: #ebf8ff;
+      color: #22543d;
+      border-left: 3px solid #0066ff;
+    }
+    .info-box-table th.col-e {
+      background: #fff5f5;
+      color: #742a2a;
+      border-left: 3px solid #e40303;
+    }
+    .info-box-table td {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #2d3748;
+      line-height: 1.4;
+    }
+    .info-box-table td.col-p { border-left: 3px solid #0066ff; }
+    .info-box-table td.col-e { border-left: 3px solid #e40303; }
+    .info-box-table .key {
+      font-weight: 700;
+      font-size: 13px;
+      display: inline-block;
+      min-width: 22px;
+    }
+    .info-box-table .key-p { color: #0066ff; }
+    .info-box-table .key-e { color: #e40303; }
     .info-box-footer {
-      margin-top: 18px;
-      padding-top: 14px;
+      margin-top: 14px;
+      padding-top: 12px;
       border-top: 2px dashed #bee3f8;
     }
     .info-box-footer-title {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       color: #2c5282;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .info-box-footer p {
-      font-size: 13px;
+      font-size: 12px;
       color: #2d3748;
-      line-height: 1.6;
-      margin: 6px 0;
+      line-height: 1.5;
+      margin: 4px 0;
     }
     .info-box-footer-flow {
       text-align: center;
-      font-size: 14px !important;
+      font-size: 13px !important;
       color: #0066ff !important;
-      padding: 8px;
+      padding: 6px;
       background: #f7fafc;
-      border-radius: 8px;
-      margin-top: 10px !important;
+      border-radius: 6px;
+      margin-top: 8px !important;
     }
     .error-msg {
       color: #e53e3e;
@@ -530,68 +572,49 @@
         <input type="hidden" id="form_load_time" name="form_load_time">
         <!-- Info Box: 3P3E คืออะไร? -->
         <div class="info-box" id="threePeBox">
-          <div class="info-box-header">
-            <span class="info-box-icon">💡</span>
-            <h3 class="info-box-title">3P3E รูปแบบแรงจูงใจในการทำงานของสมาชิก PKG</h3>
-          </div>
-          <p class="info-box-lead">
-            <b>3P3E คือ รูปแบบแรงจูงใจของแต่ละคนในการทำงาน</b><br>
-            ใช้เพื่อทำความเข้าใจว่า <i>"อะไรคือสิ่งที่ทำให้สมาชิกมีแรงจูงใจในการทำงาน"</i>
-            และสามารถนำข้อมูลไปใช้ในการพัฒนา ดูแล และสร้างแรงจูงใจให้เหมาะสมกับแต่ละบุคคล
-          </p>
+ <div class="info-box-header">
+ <span class="info-box-icon"></span>
+ <h3 class="info-box-title">3P3E รูปแบบแรงจูงใจในการทำงานของสมาชิก PKG</h3>
+ </div>
+ <p class="info-box-lead">
+ <b>3P3E คือ รูปแบบแรงจูงใจของแต่ละคนในการทำงาน</b><br>
+ ใช้เพื่อทำความเข้าใจว่า <i>"อะไรคือสิ่งที่ทำให้สมาชิกมีแรงจูงใจในการทำงาน"</i>
+ และสามารถนำข้อมูลไปใช้ในการพัฒนา ดูแล และสร้างแรงจูงใจให้เหมาะสมกับแต่ละบุคคล
+ </p>
 
-          <div class="three-pe-section">
-            <h4 class="three-pe-group-title three-p">🌱 3P : แรงจูงใจเชิงบวก <span class="three-pe-tag">Direct</span></h4>
+ <div class="three-pe-section" style="margin-bottom: 0;">
+ <table class="info-box-table">
+ <thead>
+ <tr>
+ <th class="col-p" style="width:50%"> 3P · Direct</th>
+ <th class="col-e" style="width:50%"> 3E · Indirect</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td class="col-p"><b>Play</b> · รู้สึกสนุกสนาน</td>
+ <td class="col-e"><b>Emotional</b> · ทำงานตามหน้าที่</td>
+ </tr>
+ <tr>
+ <td class="col-p"><b>Purpose</b> · องค์กรตอบโจทย์</td>
+ <td class="col-e"><b>Economic</b> · ต้องการค่าตอบแทน</td>
+ </tr>
+ <tr>
+ <td class="col-p"><b>Potential</b> · ใช้ความสามารถ</td>
+ <td class="col-e"><b>Enigma</b> · ไม่มีแรงจูงใจ</td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
 
-            <div class="three-pe-item">
-              <div class="three-pe-head"><b>P — Play</b> <span class="three-pe-icon">🎮</span> · ความสนุกกับการทำงาน</div>
-              <div class="three-pe-q">"ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG"</div>
-              <div class="three-pe-desc"><i>หมายถึง</i> สมาชิกมีความสุข สนุก และรู้สึกเพลิดเพลินกับการทำงาน มีพลังในการทำงานร่วมกับผู้อื่น และรู้สึกว่างานเป็นสิ่งที่อยากทำ</div>
-            </div>
-
-            <div class="three-pe-item">
-              <div class="three-pe-head"><b>P — Purpose</b> <span class="three-pe-icon">🎯</span> · ความหมายและจุดมุ่งหมาย</div>
-              <div class="three-pe-q">"องค์กร PKG ทำให้ข้าพเจ้าใช้ความสามารถได้อย่างเต็มประสิทธิภาพ"</div>
-              <div class="three-pe-desc"><i>หมายถึง</i> สมาชิกมองเห็นคุณค่าและความหมายของงาน รู้สึกว่าสิ่งที่ทำช่วยให้ตนเองได้ใช้ความรู้ ความสามารถ และศักยภาพอย่างเต็มที่</div>
-            </div>
-
-            <div class="three-pe-item">
-              <div class="three-pe-head"><b>P — Potential</b> <span class="three-pe-icon">🌱</span> · โอกาสในการเติบโต</div>
-              <div class="three-pe-q">"องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า"</div>
-              <div class="three-pe-desc"><i>หมายถึง</i> สมาชิกมองเห็นโอกาสในการพัฒนาตนเอง เติบโต และบรรลุเป้าหมายของตนเองผ่านการทำงานใน PKG</div>
-            </div>
-          </div>
-
-          <div class="three-pe-section">
-            <h4 class="three-pe-group-title three-e">💡 3E : แรงจูงใจจากปัจจัยพื้นฐาน <span class="three-pe-tag">Indirect</span></h4>
-
-            <div class="three-pe-item">
-              <div class="three-pe-head"><b>E — Emotional</b> <span class="three-pe-icon">📋</span> · ความรับผิดชอบต่อหน้าที่</div>
-              <div class="three-pe-q">"ข้าพเจ้ามีความคิดเห็นว่าการทำงานคือหน้าที่ของทุก ๆ คน"</div>
-              <div class="three-pe-desc"><i>หมายถึง</i> สมาชิกทำงานด้วยความรับผิดชอบ เพราะมองว่าการทำงานเป็นหน้าที่และสิ่งที่ทุกคนควรทำให้ดีที่สุด</div>
-            </div>
-
-            <div class="three-pe-item">
-              <div class="three-pe-head"><b>E — Economic</b> <span class="three-pe-icon">💰</span> · ผลตอบแทน</div>
-              <div class="three-pe-q">"ข้าพเจ้ามาทำงานเพราะต้องการค่าตอบแทนเพื่อเลี้ยงครอบครัว"</div>
-              <div class="three-pe-desc"><i>หมายถึง</i> สมาชิกมีแรงจูงใจจากรายได้และค่าตอบแทน ซึ่งเป็นสิ่งสำคัญต่อการดำรงชีวิตและดูแลครอบครัว</div>
-            </div>
-
-            <div class="three-pe-item">
-              <div class="three-pe-head"><b>E — Enigma</b> <span class="three-pe-icon">😞</span> · ขาดแรงจูงใจ</div>
-              <div class="three-pe-q">"ข้าพเจ้าไม่มีแรงจูงใจในการทำงาน"</div>
-              <div class="three-pe-desc"><i>หมายถึง</i> สมาชิกยังไม่พบสิ่งที่สร้างแรงจูงใจหรือความต้องการในการทำงาน อาจรู้สึกเฉย ๆ หมดพลัง หรือไม่เห็นเหตุผลที่ทำให้อยากทุ่มเทกับงาน</div>
-            </div>
-          </div>
-
-          <div class="info-box-footer">
-            <div class="info-box-footer-title">🎯 สิ่งที่ต้องการจาก 3P3E</div>
-            <p><b>3P3E ไม่ได้มีไว้เพื่อตัดสินว่าใคร "ดีหรือไม่ดี"</b><br>
-            แต่ใช้เพื่อ <b>เข้าใจแรงจูงใจของสมาชิกแต่ละคน</b> และนำข้อมูลไปออกแบบการพัฒนา การดูแล และการสร้างสภาพแวดล้อมในการทำงานให้เหมาะสมกับแต่ละบุคคล</p>
-            <p class="info-box-footer-flow"><b>เข้าใจแรงจูงใจ</b> → <b>เข้าใจสมาชิก</b> → <b>พัฒนาได้ตรงจุด</b> → <b>สร้างผลงานที่ดีร่วมกัน</b></p>
-          </div>
-        </div>
-        <!-- Section 0: ข้อมูลสมาชิก -->
+ <div class="info-box-footer">
+ <div class="info-box-footer-title"> สิ่งที่ต้องการจาก 3P3E</div>
+ <p><b>3P3E ไม่ได้มีไว้เพื่อตัดสินว่าใคร "ดีหรือไม่ดี"</b><br>
+ แต่ใช้เพื่อ <b>เข้าใจแรงจูงใจของสมาชิกแต่ละคน</b> และนำข้อมูลไปออกแบบการพัฒนา การดูแล และการสร้างสภาพแวดล้อมในการทำงานให้เหมาะสมกับแต่ละบุคคล</p>
+ <p class="info-box-footer-flow"><b>เข้าใจแรงจูงใจ</b> → <b>เข้าใจสมาชิก</b> → <b>พัฒนาได้ตรงจุด</b> → <b>สร้างผลงานที่ดีร่วมกัน</b></p>
+ </div>
+ </div>
+ <!-- Section 0: ข้อมูลสมาชิก -->
         <div class="section">
           <div class="section-title">
             ข้อมูลสมาชิก
@@ -1721,7 +1744,7 @@
       toeChart = new Chart(ctx, {
         type: 'radar',
         data: {
-          labels: ['A: สนุกสนาน', 'B: ตอบโจทย์', 'C: ใช้ความสามารถ', 'D: หน้าที่', 'E: ค่าตอบแทน', 'F: ไม่มี'],
+          labels: ['A รู้สึกสนุกสนาน', 'B องค์กรตอบโจทย์', 'C ใช้ความสามารถ', 'D ทำงานตามหน้าที่', 'E ต้องการค่าตอบแทน', 'F ไม่มีแรงจูงใจ'],
           datasets: [
             {
               label: '🟦 Direct (A+B+C)',
