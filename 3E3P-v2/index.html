@@ -1645,6 +1645,27 @@
       payload.chart_1_image = chart1Png;
       payload.chart_2_image = chart2Png;
 
+      // ===== Send to Google Apps Script (GAS) =====
+      // TODO: Replace GAS_URL with the deployed Web App URL from script.google.com
+      const GAS_URL = 'YOUR_GAS_DEPLOY_URL_HERE';
+
+      if (GAS_URL !== 'YOUR_GAS_DEPLOY_URL_HERE') {
+        try {
+          console.log('📤 Sending to GAS...');
+          const gasResponse = await fetch(GAS_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          console.log('✅ Sent to GAS');
+        } catch (err) {
+          console.warn('⚠️ GAS send failed (data still captured locally):', err);
+        }
+      } else {
+        console.warn('⚠️ GAS_URL not set — data NOT sent to Sheet');
+      }
+
       document.getElementById('radarWrap').classList.add('show');
       document.getElementById('successMsg').classList.add('show');
 
