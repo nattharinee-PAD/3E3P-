@@ -273,7 +273,7 @@
     }
 
     function extractData(rows) {
-      const sections = { training: {}, roleplay: {}, mentor: {}, coach: {}, ap: [], comments: [], goal: '', date: '' };
+      const sections = { training: {}, roleplay: {}, mentor: {}, coach: {}, ap: [], comments: [], goal: '', vision: '', okr: '', krs: [], date: '' };
       let currentSection = null, currentList = null;
 
       for (const row of rows) {
@@ -285,8 +285,32 @@
           else if (name.includes('mentor')) currentSection = 'mentor';
           else if (name.includes('coach')) currentSection = 'coach';
           else if (name.includes('pad-02')) { sections.date = b; }
-          else if (name.includes('จุดมุ่งหมาย')) sections.goal = b;
-          else if (name.includes('ภาพความสำเร็จ')) sections.vision = b;
+          continue;
+        }
+        // Header section (Goal/Vision/OKR/KR) — Sheet ไม่มี * นำหน้า
+        if (a.startsWith('จุดมุ่งหมาย')) {
+          sections.goal = b || a.replace(/^จุดมุ่งหมาย\s*:\s*/, '').replace(/\*+$/, '').trim();
+          currentSection = 'header';
+          continue;
+        }
+        if (a.startsWith('ภาพความสำเร็จที่อยากเห็น')) {
+          sections.vision = b || a.replace(/^ภาพความสำเร็จที่อยากเห็น\s*:\s*/, '').trim();
+          currentSection = 'header';
+          continue;
+        }
+        if (a.startsWith('OKR')) {
+          sections.okr = a.replace(/^OKR\s*:\s*/, '').replace(/\*+$/, '').trim();
+          currentSection = 'header';
+          continue;
+        }
+        if (a.startsWith('KR ')) {
+          const krMatch = a.match(/^(KR\s+\d+\s*\.[^:]*?)\s*:\s*(.*)$/);
+          if (krMatch) {
+            sections.krs.push({ num: krMatch[1].trim(), text: krMatch[2].trim() });
+          } else {
+            sections.krs.push({ num: a.split(':')[0].trim(), text: a });
+          }
+          currentSection = 'header';
           continue;
         }
         if (a === 'AP') { currentSection = 'ap'; currentList = sections.ap; continue; }
@@ -323,8 +347,16 @@
       document.getElementById('loading').style.display = 'none';
       document.getElementById('dashboardContent').style.display = 'block';
       document.getElementById('reportDate').textContent = sections.date ? `📅 ${sections.date}` : '📅 -';
-      document.getElementById('goalText').innerHTML = sections.goal ? `<b>🎯 จุดมุ่งหมาย:</b> ${sections.goal}` : '';
-      if (sections.vision) document.getElementById('goalText').innerHTML += `<br><b>🌟 ภาพสำเร็จ:</b> ${sections.vision}`;
+      document.getElementById('goalText').innerHTML = sections.goal ? `<div class="goal-line"><span class="goal-label">🎯 จุดมุ่งหมาย:</span> ${escapeHtml(sections.goal)}</div>` : '';
+      if (sections.vision) document.getElementById('goalText').innerHTML += `<div class="goal-line"><span class="goal-label">🌟 ภาพสำเร็จ:</span> ${escapeHtml(sections.vision)}</div>`;
+      if (sections.okr) document.getElementById('goalText').innerHTML += `<div class="okr-line"><span class="okr-label">🎯 OKR:</span> ${escapeHtml(sections.okr)}</div>`;
+      if (sections.krs.length > 0) {
+        document.getElementById('goalText').innerHTML += '<ol class="kr-list-header">' +
+          sections.krs.map(k => {
+            const icon = k.num.includes('KR 1') ? '🎓' : (k.num.includes('KR 2') ? '👥' : (k.num.includes('KR 3') ? '🏆' : '📊'));
+            return `<li><span class="kr-num">${escapeHtml(k.num)}</span> ${icon} ${escapeHtml(k.text)}</li>`;
+          }).join('') + '</ol>';
+      }
       document.getElementById('fetchTime').textContent = new Date().toLocaleString('th-TH');
 
       // KPIs
@@ -421,6 +453,17 @@
       const eb = document.getElementById('errorBox');
       eb.textContent = msg;
       eb.style.display = 'block';
+    }
+
+    // XSS-safe HTML escape
+    function escapeHtml(s) {
+      if (s == null) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
 
     // ============ INIT ============
