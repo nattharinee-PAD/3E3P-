@@ -41,6 +41,88 @@
       color: #4a5568;
       font-size: 14px;
     }
+    /* === Header: Goal/Vision/OKR/KR (unified card-style) === */
+    .header-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      margin: 8px 0;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #1a202c;
+    }
+    .header-line .header-icon {
+      flex: 0 0 24px;
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 6px;
+    }
+    .header-line .header-label {
+      flex: 0 0 auto;
+      font-weight: 700;
+      color: #1a202c;
+      margin-right: 4px;
+    }
+    .header-line .header-text { flex: 1 1 auto; }
+    /* Color themes (เดียวกันทุกตัว — แค่ gradient ต่าง) */
+    .header-line.goal { background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); border-left: 4px solid #6366f1; }
+    .header-line.vision { background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-left: 4px solid #a855f7; }
+    .header-line.okr { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b; }
+    .header-line.kr { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 4px solid #10b981; }
+    /* KRs list (รวม 3 KRs ในกล่องเดียว) */
+    .header-krs {
+      padding: 4px;
+      margin: 8px 0;
+      background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+      border-left: 4px solid #10b981;
+      border-radius: 8px;
+    }
+    .header-krs ol {
+      list-style: none;
+      counter-reset: krc;
+      margin: 0;
+      padding: 0;
+    }
+    .header-krs li {
+      counter-increment: krc;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      margin: 0;
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #1a202c;
+    }
+    .header-krs li + li { border-top: 1px solid rgba(16, 185, 129, 0.15); }
+    .header-krs .kr-badge {
+      flex: 0 0 auto;
+      background: #10b981;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .header-krs .kr-icon {
+      flex: 0 0 22px;
+      width: 22px;
+      height: 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .header-krs .kr-text { flex: 1 1 auto; }
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -347,15 +429,25 @@
       document.getElementById('loading').style.display = 'none';
       document.getElementById('dashboardContent').style.display = 'block';
       document.getElementById('reportDate').textContent = sections.date ? `📅 ${sections.date}` : '📅 -';
-      document.getElementById('goalText').innerHTML = sections.goal ? `<div class="goal-line"><span class="goal-label">🎯 จุดมุ่งหมาย:</span> ${escapeHtml(sections.goal)}</div>` : '';
-      if (sections.vision) document.getElementById('goalText').innerHTML += `<div class="goal-line"><span class="goal-label">🌟 ภาพสำเร็จ:</span> ${escapeHtml(sections.vision)}</div>`;
-      if (sections.okr) document.getElementById('goalText').innerHTML += `<div class="okr-line"><span class="okr-label">🎯 OKR:</span> ${escapeHtml(sections.okr)}</div>`;
+      document.getElementById('goalText').innerHTML = '';
+      if (sections.goal) {
+        document.getElementById('goalText').innerHTML += `<div class="header-line goal"><span class="header-icon">🎯</span><span class="header-label">จุดมุ่งหมาย:</span><span class="header-text">${escapeHtml(sections.goal)}</span></div>`;
+      }
+      if (sections.vision) {
+        document.getElementById('goalText').innerHTML += `<div class="header-line vision"><span class="header-icon">🌟</span><span class="header-label">ภาพสำเร็จ:</span><span class="header-text">${escapeHtml(sections.vision)}</span></div>`;
+      }
+      if (sections.okr) {
+        document.getElementById('goalText').innerHTML += `<div class="header-line okr"><span class="header-icon">🎯</span><span class="header-label">OKR:</span><span class="header-text">${escapeHtml(sections.okr)}</span></div>`;
+      }
       if (sections.krs.length > 0) {
-        document.getElementById('goalText').innerHTML += '<ol class="kr-list-header">' +
+        const krIcons = { 1: '🎓', 2: '👥', 3: '🏆' };
+        const krsHtml = '<div class="header-krs"><ol>' +
           sections.krs.map(k => {
-            const icon = k.num.includes('KR 1') ? '🎓' : (k.num.includes('KR 2') ? '👥' : (k.num.includes('KR 3') ? '🏆' : '📊'));
-            return `<li><span class="kr-num">${escapeHtml(k.num)}</span> ${icon} ${escapeHtml(k.text)}</li>`;
-          }).join('') + '</ol>';
+            const n = (k.num.match(/\d+/) || ['?'])[0];
+            const icon = krIcons[n] || '📊';
+            return `<li><span class="kr-badge">${escapeHtml(k.num)}</span><span class="kr-icon">${icon}</span><span class="kr-text">${escapeHtml(k.text)}</span></li>`;
+          }).join('') + '</ol></div>';
+        document.getElementById('goalText').innerHTML += krsHtml;
       }
       document.getElementById('fetchTime').textContent = new Date().toLocaleString('th-TH');
 
