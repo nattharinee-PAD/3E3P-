@@ -219,9 +219,13 @@
     }
     .rating-scale-meta {
       font-size: 12px;
-      color: #718096;
-      margin-top: 4px;
-      display: none; /* ซ่อนสูตร "น้ำหนัก × X" ตามคำขอลูกหมี */
+      color: #4a5568;
+      margin-top: 6px;
+      padding: 4px 8px;
+      background: #fef9e7;
+      border-left: 3px solid #ecc94b;
+      border-radius: 4px;
+      display: block; /* แสดงสูตร "น้ำหนัก × X" ตามคำขอลูกหมี (เปิด 31 ส.ค. 2569) */
     }
     /* === Radar chart container === */
     .radar-wrap {
@@ -274,13 +278,14 @@
     }
     .toe-formula {
       font-size: 13px;
-      color: #4a5568;
+      color: #2d3748;
       background: #f7fafc;
-      padding: 10px 14px;
+      padding: 12px 16px;
       border-radius: 8px;
       border-left: 4px solid #0066ff;
       margin-bottom: 16px;
-      font-family: 'Sarabun', monospace;
+      font-family: 'Sarabun', sans-serif;
+      line-height: 1.8;
     }
     .toe-badge-wrap {
       margin: 24px auto 0;
@@ -296,6 +301,66 @@
     .toe-badge-wrap.tier-mixed   { background: linear-gradient(135deg, #fefcbf 0%, #fef9c3 100%); border-color: #ecc94b; }
     .toe-badge-wrap.tier-compliance { background: linear-gradient(135deg, #fed7aa 0%, #feebc8 100%); border-color: #ed8936; }
     .toe-badge-wrap.tier-disengaged { background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%); border-color: #f56565; }
+
+    /* === ToE Tier Reference Table === */
+    .toe-tier-table-wrap {
+      margin: 16px 0 20px 0;
+      overflow-x: auto;
+    }
+    .toe-tier-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .toe-tier-table th {
+      background: #2d3748;
+      color: white;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .toe-tier-table td {
+      padding: 10px 12px;
+      border-top: 1px solid #e2e8f0;
+      color: #2d3748;
+      vertical-align: top;
+    }
+    .toe-tier-table td:first-child {
+      white-space: nowrap;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+    .toe-tier-table td:nth-child(2) {
+      font-weight: 600;
+    }
+    .toe-tier-table td:nth-child(3) {
+      color: #4a5568;
+    }
+    .toe-tier-table td:nth-child(4) {
+      color: #2d3748;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .toe-tier-table tr.tier-self       { background: #f0fff4; }
+    .toe-tier-table tr.tier-self td:first-child { background: #c6f6d5; }
+    .toe-tier-table tr.tier-mixed      { background: #fffff0; }
+    .toe-tier-table tr.tier-mixed td:first-child { background: #fefcbf; }
+    .toe-tier-table tr.tier-compliance { background: #fffaf0; }
+    .toe-tier-table tr.tier-compliance td:first-child { background: #fed7aa; }
+    .toe-tier-table tr.tier-disengaged { background: #fff5f5; }
+    .toe-tier-table tr.tier-disengaged td:first-child { background: #fed7d7; }
+    @media (max-width: 600px) {
+      .toe-tier-table { font-size: 12px; }
+      .toe-tier-table th, .toe-tier-table td { padding: 8px 6px; }
+    }
     .toe-score {
       font-size: 36px;
       font-weight: 800;
@@ -744,7 +809,7 @@
                 <input type="radio" id="rateA_4" name="rating_A" value="4"><label for="rateA_4">4</label>
                 <input type="radio" id="rateA_5" name="rating_A" value="5"><label for="rateA_5">5</label>
               </div>
-              <div class="rating-scale-meta">น้ำหนัก × 10</div>
+              <div class="rating-scale-meta">เงื่อนไขการคำนวณ: คะแนนที่ได้ × 10 = ค่าคะแนนสุทธิ</div>
             </div>
           </div>
 
@@ -762,7 +827,7 @@
                 <input type="radio" id="rateB_4" name="rating_B" value="4"><label for="rateB_4">4</label>
                 <input type="radio" id="rateB_5" name="rating_B" value="5"><label for="rateB_5">5</label>
               </div>
-              <div class="rating-scale-meta">น้ำหนัก × 5</div>
+              <div class="rating-scale-meta">เงื่อนไขการคำนวณ: คะแนนที่ได้ × 5 = ค่าคะแนนสุทธิ</div>
             </div>
           </div>
 
@@ -780,7 +845,7 @@
                 <input type="radio" id="rateC_4" name="rating_C" value="4"><label for="rateC_4">4</label>
                 <input type="radio" id="rateC_5" name="rating_C" value="5"><label for="rateC_5">5</label>
               </div>
-              <div class="rating-scale-meta">น้ำหนัก × 1.66</div>
+              <div class="rating-scale-meta">เงื่อนไขการคำนวณ: คะแนนที่ได้ × 1.66 = ค่าคะแนนสุทธิ</div>
             </div>
           </div>
 
@@ -798,7 +863,7 @@
                 <input type="radio" id="rateD_4" name="rating_D" value="4"><label for="rateD_4">4</label>
                 <input type="radio" id="rateD_5" name="rating_D" value="5"><label for="rateD_5">5</label>
               </div>
-              <div class="rating-scale-meta">น้ำหนัก × 1.66</div>
+              <div class="rating-scale-meta">เงื่อนไขการคำนวณ: คะแนนที่ได้ × 1.66 = ค่าคะแนนสุทธิ</div>
             </div>
           </div>
 
@@ -816,7 +881,7 @@
                 <input type="radio" id="rateE_4" name="rating_E" value="4"><label for="rateE_4">4</label>
                 <input type="radio" id="rateE_5" name="rating_E" value="5"><label for="rateE_5">5</label>
               </div>
-              <div class="rating-scale-meta">น้ำหนัก × 5</div>
+              <div class="rating-scale-meta">เงื่อนไขการคำนวณ: คะแนนที่ได้ × 5 = ค่าคะแนนสุทธิ</div>
             </div>
           </div>
 
@@ -834,7 +899,7 @@
                 <input type="radio" id="rateF_4" name="rating_F" value="4"><label for="rateF_4">4</label>
                 <input type="radio" id="rateF_5" name="rating_F" value="5"><label for="rateF_5">5</label>
               </div>
-              <div class="rating-scale-meta">น้ำหนัก × 10</div>
+              <div class="rating-scale-meta">เงื่อนไขการคำนวณ: คะแนนที่ได้ × 10 = ค่าคะแนนสุทธิ</div>
             </div>
           </div>
 
@@ -860,9 +925,51 @@
           <div class="toe-section">
             <h3>🎯 Chart #2 · ToE (Theory of Engagement)</h3>
             <div class="toe-formula">
-              <b>Direct</b> = A + B + C &nbsp;|&nbsp; <b>Indirect</b> = D + E + F &nbsp;|&nbsp;
-              <b>ToE Score</b> = Direct − Indirect
+              <b>Direct</b> = ค่าคะแนนสุทธิ A + ค่าคะแนนสุทธิ B + ค่าคะแนนสุทธิ C<br>
+              <b>Indirect</b> = ค่าคะแนนสุทธิ D + ค่าคะแนนสุทธิ E + ค่าคะแนนสุทธิ F<br>
+              <b>ToE Score</b> = Direct − Indirect = ค่าสุทธิ Disengaged (ไม่ผูกพัน)
             </div>
+
+            <!-- ToE Tier Reference Table -->
+            <div class="toe-tier-table-wrap">
+              <table class="toe-tier-table">
+                <thead>
+                  <tr>
+                    <th>ToE Score</th>
+                    <th>คำศัพท์</th>
+                    <th>แปลตรงตัว</th>
+                    <th>ความหมายในการบริหารคน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="tier-row tier-self">
+                    <td><b>&gt; 40</b> 🟢</td>
+                    <td><b>Self-driven</b></td>
+                    <td>ขับเคลื่อนด้วยตนเอง</td>
+                    <td>มีแรงขับจากภายในสูง ทำงานเพราะอยากทำ เห็นคุณค่าและความหมายของงาน</td>
+                  </tr>
+                  <tr class="tier-row tier-mixed">
+                    <td><b>10–40</b> 🟡</td>
+                    <td><b>Mixed</b></td>
+                    <td>ผสม</td>
+                    <td>มีแรงจูงใจทั้งจากภายในและภายนอก ทั้งอยากทำและมีปัจจัยภายนอกเข้ามากระตุ้น</td>
+                  </tr>
+                  <tr class="tier-row tier-compliance">
+                    <td><b>-10 ถึง 10</b> 🟠</td>
+                    <td><b>Compliance</b></td>
+                    <td>การปฏิบัติตาม / ทำตาม</td>
+                    <td>ทำเพราะเป็นหน้าที่หรือกติกา ทำตามสิ่งที่องค์กรกำหนด แต่แรงขับจากภายในยังไม่สูง</td>
+                  </tr>
+                  <tr class="tier-row tier-disengaged">
+                    <td><b>&lt; -10</b> 🔴</td>
+                    <td><b>Disengaged</b></td>
+                    <td>ไม่ผูกพัน / ถอยห่าง</td>
+                    <td>ขาดแรงจูงใจและความผูกพันกับงาน ทำงานเพราะถูกบีบหรือไม่มีเหตุผลที่อยากทำต่อ</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
             <div class="radar-canvas-wrap">
               <canvas id="toeCanvas"></canvas>
             </div>
