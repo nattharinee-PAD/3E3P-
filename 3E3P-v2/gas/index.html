@@ -1905,8 +1905,12 @@
 
       return { direct: +direct.toFixed(2), indirect: +indirect.toFixed(2), toeScore, tier: tier.label };
     }
+  </script>
+  <!-- Chart.js (radar) — CDN allowed via CSP script-src -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-    // ===== Real-time: render Chart #1 + ToE ทุกครั้งที่ให้คะแนน (แก้บั๊ก 0.00 31 ส.ค. 2569) =====
+  <!-- Real-time listener: ต้องอยู่หลัง Chart.js load (แก้บั๊ก 0.00 31 ส.ค. 2569 09:47) -->
+  <script>
     document.querySelectorAll('.rating-scale input[type="radio"]').forEach(radio => {
       radio.addEventListener('change', () => {
         const name = radio.name;
@@ -1927,7 +1931,5 @@
       });
     });
   </script>
-  <!-- Chart.js (radar) — CDN allowed via CSP script-src -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </body>
 </html>
