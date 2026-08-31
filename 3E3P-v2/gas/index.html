@@ -2003,7 +2003,7 @@
   <!-- Chart.js (radar) — CDN allowed via CSP script-src -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-  <!-- Real-time listener: ต้องอยู่หลัง Chart.js load (แก้บั๊ก 0.00 31 ส.ค. 2569 09:47) -->
+  <!-- Radio listener: highlight ปุ่มอย่างเดียว (กราฟ + คะแนนจะแสดงหลังกด Submit ตามคำสั่งลูกหมี 31 ส.ค. 2569 10:44) -->
   <script>
     document.querySelectorAll('.rating-scale input[type="radio"]').forEach(radio => {
       radio.addEventListener('change', () => {
@@ -2011,16 +2011,7 @@
         document.querySelectorAll(`input[name="${name}"] + label`).forEach(l => l.classList.remove('checked'));
         const lbl = radio.nextElementSibling;
         if (lbl) lbl.classList.add('checked');
-
-        const { scores, hasAny } = collectScores();
-        const { weighted, totalScore } = computeWeighted(scores);  // destructure nested {weighted, totalScore}
-        if (hasAny) {
-          renderRadar(scores, weighted, totalScore);
-          renderToE(weighted);
-        } else {
-          document.getElementById('radarWrap').classList.remove('show');
-          document.getElementById('toeBadgeWrap').style.display = 'none';
-        }
+        // ไม่ render Chart / ToE ตอนคลิก — ต้อง Submit ก่อน
       });
     });
   </script>
