@@ -262,7 +262,7 @@
       margin-right: 3px;
     }
     .radar-canvas-wrap {
-      max-width: 480px;
+      max-width: 560px;
       margin: 0 auto;
     }
     /* === ToE Section === */
@@ -909,14 +909,6 @@
         <!-- Radar Charts: แสดงหลังกดส่งข้อมูล -->
         <div class="radar-wrap" id="radarWrap">
           <h3>📊 ค่าคะแนน</h3>
-          <div class="chart-legend-a-f">
-            <span><b>A</b> รู้สึกสนุกสนาน</span>
-            <span><b>B</b> องค์กรตอบโจทย์</span>
-            <span><b>C</b> ได้ใช้ความสามารถ</span>
-            <span><b>D</b> ทำงานตามหน้าที่</span>
-            <span><b>E</b> ต้องการค่าตอบแทน</span>
-            <span><b>F</b> ไม่มีแรงจูงใจ</span>
-          </div>
           <div class="radar-canvas-wrap">
             <canvas id="radarCanvas"></canvas>
           </div>
@@ -1587,6 +1579,15 @@
 
     // ===== Validate rank 1-6 (real-time disable + ไม่ซ้ำกัน) =====
     // ===== Rating items (A-F) with weights =====
+    // Legend สั้น (แสดงใน radar chart รอบกราฟ)
+    const LEGEND_SHORT = {
+      A: 'รู้สึกสนุกสนาน',
+      B: 'องค์กรตอบโจทย์',
+      C: 'ได้ใช้ความสามารถ',
+      D: 'ทำงานตามหน้าที่',
+      E: 'ต้องการค่าตอบแทน',
+      F: 'ไม่มีแรงจูงใจ'
+    };
     const RATING_ITEMS = [
       { key: 'A', weight: 10,  text: 'ข้าพเจ้ารู้สึกสนุกสนานกับการทำงานใน PKG' },
       { key: 'B', weight: 5,   text: 'องค์กร PKG สามารถตอบโจทย์ตามจุดมุ่งหมายของข้าพเจ้า' },
@@ -1826,7 +1827,8 @@
     // ===== Radar Chart Renderer =====
     let radarChart = null;
     function renderRadar(scores, weighted, totalScore) {
-      const labels = RATING_ITEMS.map(i => `${i.key}`);
+      // แสดง key + คำอธิบาย 2 บรรทัด (A รู้สึกสนุกสนาน)
+      const labels = RATING_ITEMS.map(i => [i.key, LEGEND_SHORT[i.key]]);
       const weightedData = RATING_ITEMS.map(i => weighted[i.key]);
       const ctx = document.getElementById('radarCanvas').getContext('2d');
       if (radarChart) radarChart.destroy();
@@ -1853,8 +1855,15 @@
               max: 50,
               ticks: { stepSize: 10, backdropColor: 'transparent' },
               pointLabels: {
-                font: { size: 16, weight: 'bold' },
-                color: '#2d3748'
+                font: { size: 13, weight: 'bold' },
+                color: '#2d3748',
+                padding: 8,
+                centerPointLabels: false,
+                callback: function(label) {
+                  // label เป็น array 2 บรรทัดจาก data.labels
+                  if (Array.isArray(label)) return label;
+                  return label;
+                }
               }
             }
           },
