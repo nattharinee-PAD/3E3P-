@@ -1837,10 +1837,10 @@
       sessionStorage.setItem(rateKey, JSON.stringify(log));
 
       // ===== Render Radar Chart #1 + Chart #2 (ToE) + Capture PNGs =====
-      console.log('🔍 DEBUG [submit]:', { scores, weighted, totalScore });
+      // เก็บ weighted เป็น global เพื่อให้ renderToE อ่านค่าเดียวกับ renderRadar (แก้บั๊ก ToE=0.00 31 ส.ค. 2569 11:01)
       renderRadar(scores, weighted, totalScore);
-      const toeResult = renderToE(weighted);  // returns { direct, indirect, toeScore, tier }
-      console.log('🔍 DEBUG [ToE result]:', toeResult);
+      CURRENT_WEIGHTED = weighted;  // sync global state
+      const toeResult = renderToE(CURRENT_WEIGHTED);  // returns { direct, indirect, toeScore, tier }
 
       // รอ animation เสร็จก่อน capture (Chart #1 only - Chart #2 ถูกลบแล้ว)
       await new Promise(r => setTimeout(r, 500));
@@ -1902,6 +1902,7 @@
 
     // ===== Radar Chart Renderer =====
     let radarChart = null;
+    let CURRENT_WEIGHTED = null;  // global state สำหรับ renderToE (sync กับ renderRadar)
     function renderRadar(scores, weighted, totalScore) {
       // แสดง radar-wrap container (real-time + submit)
       document.getElementById('radarWrap').classList.add('show');
