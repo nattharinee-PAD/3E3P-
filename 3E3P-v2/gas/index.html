@@ -1812,6 +1812,9 @@
     // ===== Radar Chart Renderer =====
     let radarChart = null;
     function renderRadar(scores, weighted, totalScore) {
+      // แสดง radar-wrap container (real-time + submit)
+      document.getElementById('radarWrap').classList.add('show');
+
       // แสดง key + คำอธิบาย 2 บรรทัด (A รู้สึกสนุกสนาน)
       const labels = RATING_ITEMS.map(i => [i.key, LEGEND_SHORT[i.key]]);
       const weightedData = RATING_ITEMS.map(i => weighted[i.key]);
