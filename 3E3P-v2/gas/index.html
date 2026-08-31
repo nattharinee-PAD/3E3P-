@@ -1621,16 +1621,6 @@
       return { weighted, totalScore: +totalScore.toFixed(2) };
     }
 
-    document.querySelectorAll('.rating-scale input[type="radio"]').forEach(radio => {
-      radio.addEventListener('change', () => {
-        const name = radio.name; // rating_A, rating_B, ...
-        document.querySelectorAll(`input[name="${name}"] + label`).forEach(l => l.classList.remove('checked'));
-        const lbl = radio.nextElementSibling;
-        if (lbl) lbl.classList.add('checked');
-        // Note: Chart จะแสดงหลังกดส่งข้อมูล (ตามคำสั่งลูกหมี)
-      });
-    });
-
     // ===== Refresh button: refresh หน้า (reset ทั้งหมด) =====
     document.getElementById('refreshBtn').addEventListener('click', (e) => {
       e.preventDefault();
@@ -1915,6 +1905,27 @@
 
       return { direct: +direct.toFixed(2), indirect: +indirect.toFixed(2), toeScore, tier: tier.label };
     }
+
+    // ===== Real-time: render Chart #1 + ToE ทุกครั้งที่ให้คะแนน (แก้บั๊ก 0.00 31 ส.ค. 2569) =====
+    document.querySelectorAll('.rating-scale input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const name = radio.name;
+        document.querySelectorAll(`input[name="${name}"] + label`).forEach(l => l.classList.remove('checked'));
+        const lbl = radio.nextElementSibling;
+        if (lbl) lbl.classList.add('checked');
+
+        const { scores, hasAny } = collectScores();
+        const weighted = computeWeighted(scores);
+        const totalScore = Object.values(weighted).reduce((s, v) => s + v, 0);
+        if (hasAny) {
+          renderRadar(scores, weighted, totalScore);
+          renderToE(weighted);
+        } else {
+          document.getElementById('radarWrap').classList.remove('show');
+          document.getElementById('toeBadgeWrap').style.display = 'none';
+        }
+      });
+    });
   </script>
   <!-- Chart.js (radar) — CDN allowed via CSP script-src -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
