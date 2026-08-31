@@ -962,10 +962,6 @@
               </table>
             </div>
 
-            <div class="radar-canvas-wrap">
-              <canvas id="toeCanvas"></canvas>
-            </div>
-
             <!-- ToE Score Badge -->
             <div class="toe-badge-wrap" id="toeBadgeWrap" style="display:none;">
               <div class="toe-score" id="toeScore">0.00</div>
@@ -1765,12 +1761,11 @@
       renderRadar(scores, weighted, totalScore);
       const toeResult = renderToE(weighted);  // returns { direct, indirect, toeScore, tier }
 
-      // รอ Chart.js animation เสร็จก่อน capture
+      // รอ animation เสร็จก่อน capture (Chart #1 only - Chart #2 ถูกลบแล้ว)
       await new Promise(r => setTimeout(r, 500));
 
-      // ===== Capture Chart #1 + Chart #2 เป็น base64 PNG =====
+      // ===== Capture Chart #1 เป็น base64 PNG (Chart #2 ถูกนำออก 31 ส.ค. 2569) =====
       const chart1Png = document.getElementById('radarCanvas').toDataURL('image/png');
-      const chart2Png = document.getElementById('toeCanvas').toDataURL('image/png');
 
       // Add ToE + chart images to payload
       payload.toe_direct = toeResult.direct;
@@ -1778,7 +1773,7 @@
       payload.toe_score = toeResult.toeScore;
       payload.toe_tier = toeResult.tier;
       payload.chart_1_image = chart1Png;
-      payload.chart_2_image = chart2Png;
+      // (Chart #2 image ถูกนำออก - แสดงแค่ผลวิเคราะห์ ToE Score + Tier)
 
       // ===== Send to Google Apps Script (GAS) =====
       // TODO: Replace GAS_URL with the deployed Web App URL from script.google.com
@@ -1902,68 +1897,14 @@
       return TOE_TIERS[TOE_TIERS.length - 1];
     }
 
-    // ===== ToE Chart Renderer =====
-    let toeChart = null;
+    // ===== ToE Calculator (no chart - แสดงแค่ผลวิเคราะห์) =====
     function renderToE(weighted) {
       const direct = (weighted.A || 0) + (weighted.B || 0) + (weighted.C || 0);
       const indirect = (weighted.D || 0) + (weighted.E || 0) + (weighted.F || 0);
       const toeScore = +(direct - indirect).toFixed(2);
       const tier = classifyToE(toeScore);
 
-      // === Render Chart #2 (Direct vs Indirect) ===
-      const ctx = document.getElementById('toeCanvas').getContext('2d');
-      if (toeChart) toeChart.destroy();
-      toeChart = new Chart(ctx, {
-        type: 'radar',
-        data: {
-          labels: ['A รู้สึกสนุกสนาน', 'B องค์กรตอบโจทย์', 'C ใช้ความสามารถ', 'D ทำงานตามหน้าที่', 'E ต้องการค่าตอบแทน', 'F ไม่มีแรงจูงใจ'],
-          datasets: [
-            {
-              label: '🟦 Direct (A+B+C)',
-              data: [weighted.A || 0, weighted.B || 0, weighted.C || 0, 0, 0, 0],
-              backgroundColor: 'rgba(0, 102, 255, 0.20)',
-              borderColor: '#0066ff',
-              borderWidth: 2,
-              pointBackgroundColor: '#0066ff',
-              pointRadius: 5
-            },
-            {
-              label: '🟥 Indirect (D+E+F)',
-              data: [0, 0, 0, weighted.D || 0, weighted.E || 0, weighted.F || 0],
-              backgroundColor: 'rgba(228, 3, 3, 0.20)',
-              borderColor: '#e40303',
-              borderWidth: 2,
-              pointBackgroundColor: '#e40303',
-              pointRadius: 5
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          scales: {
-            r: {
-              min: 0, max: 50,
-              ticks: { stepSize: 10, backdropColor: 'transparent' },
-              pointLabels: { font: { size: 13, weight: 'bold' }, color: '#2d3748' }
-            }
-          },
-          plugins: {
-            legend: { display: true, position: 'bottom' },
-            tooltip: {
-              callbacks: {
-                label: (ctx) => {
-                  const val = ctx.parsed.r;
-                  if (val === 0) return null;
-                  return `${ctx.dataset.label}: ${val.toFixed(2)}`;
-                }
-              }
-            }
-          }
-        }
-      });
-
-      // === Render ToE Badge ===
+      // === Render ToE Badge (analysis result only) ===
       const wrap = document.getElementById('toeBadgeWrap');
       wrap.classList.remove('tier-self', 'tier-mixed', 'tier-compliance', 'tier-disengaged');
       wrap.classList.add(tier.cls);
