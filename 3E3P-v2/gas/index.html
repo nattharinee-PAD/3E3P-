@@ -1837,8 +1837,10 @@
       sessionStorage.setItem(rateKey, JSON.stringify(log));
 
       // ===== Render Radar Chart #1 + Chart #2 (ToE) + Capture PNGs =====
+      console.log('🔍 DEBUG [submit]:', { scores, weighted, totalScore });
       renderRadar(scores, weighted, totalScore);
       const toeResult = renderToE(weighted);  // returns { direct, indirect, toeScore, tier }
+      console.log('🔍 DEBUG [ToE result]:', toeResult);
 
       // รอ animation เสร็จก่อน capture (Chart #1 only - Chart #2 ถูกลบแล้ว)
       await new Promise(r => setTimeout(r, 500));
