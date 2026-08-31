@@ -1919,8 +1919,7 @@
         if (lbl) lbl.classList.add('checked');
 
         const { scores, hasAny } = collectScores();
-        const weighted = computeWeighted(scores);
-        const totalScore = Object.values(weighted).reduce((s, v) => s + v, 0);
+        const { weighted, totalScore } = computeWeighted(scores);  // destructure nested {weighted, totalScore}
         if (hasAny) {
           renderRadar(scores, weighted, totalScore);
           renderToE(weighted);
