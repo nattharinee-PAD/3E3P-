@@ -1881,6 +1881,14 @@
       document.getElementById('radarWrap').classList.add('show');
       document.getElementById('successMsg').classList.add('show');
 
+      // ✅ ย้าย radarWrap + toe-section ออกจาก form ก่อนซ่อน (31 ส.ค. 2569 17:15)
+      // ปัญหาเดิม: radarWrap อยู่ใน form → display:none ทำให้หายหมด
+      const formBody = document.querySelector('.form-body');
+      const radarWrap = document.getElementById('radarWrap');
+      const toeSection = document.querySelector('.toe-section');
+      if (radarWrap) formBody.parentNode.insertBefore(radarWrap, formBody.nextSibling);
+      if (toeSection) formBody.parentNode.insertBefore(toeSection, formBody.nextSibling);
+
       // ✅ ซ่อนฟอร์มทั้งหมด เหลือแค่หน้ากราฟ + ผลสรุป (ลูกหมีขอ 31 ส.ค. 2569 15:34)
       document.getElementById('motivationForm').style.display = 'none';
       document.getElementById('threePeBox').style.display = 'none';  // ซ่อน Info Box 3P3E
