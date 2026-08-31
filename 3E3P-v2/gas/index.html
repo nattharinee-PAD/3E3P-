@@ -1837,10 +1837,11 @@
       sessionStorage.setItem(rateKey, JSON.stringify(log));
 
       // ===== Render Radar Chart #1 + Chart #2 (ToE) + Capture PNGs =====
-      // ✅ CURRENT_WEIGHTED sync กับ renderRadar (verified E2E 31 ส.ค. 2569 11:14)
-      renderRadar(scores, weighted, totalScore);
-      CURRENT_WEIGHTED = weighted;
-      const toeResult = renderToE(CURRENT_WEIGHTED);  // returns { direct, indirect, toeScore, tier }
+      // ✅ Clone weighted ก่อนส่ง renderRadar (กัน Chart.js modify) - 31 ส.ค. 2569 11:47
+      const weightedSnapshot = { ...weighted };  // immutable copy
+      CURRENT_WEIGHTED = weightedSnapshot;
+      renderRadar(scores, weightedSnapshot, totalScore);
+      const toeResult = renderToE(weightedSnapshot);  // ส่ง snapshot (ไม่ใช่ original)
 
       // รอ animation เสร็จก่อน capture (Chart #1 only - Chart #2 ถูกลบแล้ว)
       await new Promise(r => setTimeout(r, 500));
