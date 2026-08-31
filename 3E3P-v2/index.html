@@ -1881,7 +1881,26 @@
       document.getElementById('radarWrap').classList.add('show');
       document.getElementById('successMsg').classList.add('show');
 
-      console.log('📊 Charts shown - จะอยู่ตลอดจนกว่า user จะ refresh');
+      // ✅ ซ่อนฟอร์มทั้งหมด เหลือแค่หน้ากราฟ + ผลสรุป (ลูกหมีขอ 31 ส.ค. 2569 15:34)
+      document.getElementById('motivationForm').style.display = 'none';
+      document.getElementById('threePeBox').style.display = 'none';  // ซ่อน Info Box 3P3E
+
+      // แสดงปุ่ม "กรอกใหม่"
+      let newSubmitBtn = document.getElementById('newSubmitBtn');
+      if (!newSubmitBtn) {
+        newSubmitBtn = document.createElement('button');
+        newSubmitBtn.id = 'newSubmitBtn';
+        newSubmitBtn.type = 'button';
+        newSubmitBtn.className = 'submit-btn';
+        newSubmitBtn.style.cssText = 'max-width: 320px; margin: 24px auto; display: block;';
+        newSubmitBtn.innerHTML = '🔄 กรอกข้อมูลใหม่';
+        document.querySelector('.container').appendChild(newSubmitBtn);
+        newSubmitBtn.addEventListener('click', () => {
+          window.location.reload();
+        });
+      }
+
+      console.log('📊 Charts shown - ฟอร์มซ่อน เหลือแค่หน้ากราฟ + ผลสรุป');
 
       // Wait for Chart.js animation to settle, then scroll
       await new Promise(r => setTimeout(r, 500));
