@@ -27,6 +27,11 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.15);
       overflow: hidden;
       border-top: 4px solid #1e40af;
+      transition: max-width 0.3s ease;
+    }
+    /* 📱💻 Desktop: ขยาย container เป็น 1024px เพื่อให้ Info Box 3P3E กว้างขึ้น (31 ส.ค. 2569) */
+    @media (min-width: 1025px) {
+      .container { max-width: 1024px; }
     }
     .header {
       background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
@@ -716,7 +721,6 @@
 
     /* 💻 Desktop (> 1024px) - default styles above */
     @media (min-width: 1025px) {
-      .container { max-width: 720px; }
       .rating-table { gap: 12px 16px; }
       .radar-canvas-wrap { max-width: 560px; }
     }
