@@ -1986,10 +1986,21 @@
 
     // ===== ToE Calculator (no chart - แสดงแค่ผลวิเคราะห์) =====
     function renderToE(weighted) {
-      const direct = (weighted.A || 0) + (weighted.B || 0) + (weighted.C || 0);
-      const indirect = (weighted.D || 0) + (weighted.E || 0) + (weighted.F || 0);
+      // ✅ SAFETY CHECK: ป้องกัน weighted ว่าง (แก้บั๊ก 0.00 + ไม่มีสี 31 ส.ค. 2569 11:32)
+      const w = weighted || CURRENT_WEIGHTED || {};
+      const totalWeighted = (w.A || 0) + (w.B || 0) + (w.C || 0) + (w.D || 0) + (w.E || 0) + (w.F || 0);
+
+      if (totalWeighted === 0) {
+        console.warn('⚠️ renderToE: weighted ทั้งหมดเป็น 0 — ข้ามการ render');
+        return { direct: 0, indirect: 0, toeScore: 0, tier: 'N/A' };
+      }
+
+      const direct = (w.A || 0) + (w.B || 0) + (w.C || 0);
+      const indirect = (w.D || 0) + (w.E || 0) + (w.F || 0);
       const toeScore = +(direct - indirect).toFixed(2);
       const tier = classifyToE(toeScore);
+
+      console.log('📊 renderToE:', { w, direct, indirect, toeScore, tier: tier.label });
 
       // === Render ToE Badge (analysis result only) ===
       const wrap = document.getElementById('toeBadgeWrap');
