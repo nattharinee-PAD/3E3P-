@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://script.google.com https://script.googleusercontent.com; frame-ancestors 'none'; form-action 'self'; base-uri 'self';">
+<title>ToE-Formula v2 — บันทึกคะแนน (PKG)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Sarabun', 'Noto Sans Thai', -apple-system, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px 16px;
+    color: #2d3748;
+  }
+  .container {
+    max-width: 560px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.15);
+    overflow: hidden;
+  }
+  .header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    padding: 24px;
+    text-align: center;
+  }
+  .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .header p { font-size: 13px; opacity: .9; }
+  .form-body { padding: 24px; }
+  .form-group { margin-bottom: 18px; }
+  .form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #4a5568;
+  }
+  .form-group label .req { color: #e53e3e; }
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color .2s;
+    font-family: inherit;
+  }
+  .form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+  .form-group input[readonly] {
+    background: #f7fafc;
+    color: #4a5568;
+  }
+  .form-group input[readonly].error { border-color: #e53e3e; }
+  .form-group input.error { border-color: #e53e3e; }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+  }
+  .score-input { text-align: center; font-weight: 700; font-size: 18px !important; }
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: transform .15s, box-shadow .15s;
+    font-family: inherit;
+  }
+  .submit-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(102,126,234,.4);
+  }
+  .submit-btn:disabled {
+    background: #cbd5e0;
+    cursor: not-allowed;
+  }
+  .status {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 14px;
+    display: none;
+  }
+  .status.show { display: block; }
+  .status.success { background: #c6f6d5; color: #22543d; }
+  .status.error { background: #fed7d7; color: #742a2a; }
+  .status.loading { background: #bee3f8; color: #2c5282; }
+  .footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 12px;
+    color: #718096;
+    background: #f7fafc;
+  }
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2d3748;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📊 ToE-Formula v2</h1>
+    <p>บันทึกคะแนน Direct / Indirect / ToE Score — PKG</p>
+  </div>
+
+  <form id="toeForm" class="form-body" autocomplete="off" novalidate>
+    <div class="form-group">
+      <label>รหัสสมาชิก (7 หลัก) <span class="req">*</span></label>
+      <input type="text" id="memberId" inputmode="numeric" pattern="[0-9]{7}" maxlength="7" placeholder="เช่น 6407049" required>
+    </div>
+
+    <div class="form-group">
+      <label>ชื่อ-สกุล</label>
+      <input type="text" id="memberName" readonly placeholder="จะดึงอัตโนมัติเมื่อกรอกรหัส">
+    </div>
+
+    <div class="form-group">
+      <label>BU (ฝ่าย)</label>
+      <input type="text" id="memberBu" readonly placeholder="จะดึงอัตโนมัติเมื่อกรอกรหัส">
+    </div>
+
+    <div class="form-group">
+      <label>คะแนน (3 ช่อง) <span class="req">*</span></label>
+      <div class="form-row">
+        <div>
+          <input type="number" id="directScore" class="score-input" min="0" max="100" step="0.01" placeholder="Direct" required>
+          <small style="display:block;text-align:center;margin-top:4px;color:#718096;">Direct</small>
+        </div>
+        <div>
+          <input type="number" id="indirectScore" class="score-input" min="0" max="100" step="0.01" placeholder="Indirect" required>
+          <small style="display:block;text-align:center;margin-top:4px;color:#718096;">Indirect</small>
+        </div>
+        <div>
+          <input type="number" id="toeScore" class="score-input" min="0" max="100" step="0.01" placeholder="ToE" required>
+          <small style="display:block;text-align:center;margin-top:4px;color:#718096;">ToE</small>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" id="submitBtn" class="submit-btn">📤 บันทึกลง Sheet</button>
+    <div id="statusMsg" class="status"></div>
+  </form>
+
+  <div class="footer">
+    🐻 ToE-Formula v2 · powered by GAS + Google Sheet
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ===========================================================
+  // CONFIG — เปลี่ยนได้ที่นี่
+  // ===========================================================
+  const SHEET_ID = '1XOK2R9PkCucbHMbCc8Nl69t9KjTjzk1CqBAvFNyubHE'; // Sheet เดิม
+  const MEMBER_TAB = 'PKGemployee_ใช้ภายในPKG';                       // (best effort — fallback MOCK)
+  const TARGET_TAB = 'ToE_Submissions_v2';                            // tab ปลายทาง (GAS จะ append row)
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbyJWn2jYMyZbe6Amxr335YzG4gtfrnH4OBjp5SUs4gFb1ZASUc39lK3dm1Spj6gYgRq/exec';
+
+  // ===========================================================
+  // MOCK Members (fallback เมื่อดึงจาก Sheet ไม่ได้)
+  // ===========================================================
+  const MOCK_MEMBERS = {
+    '6407049': { name: 'ณัฐฑริณี คำน', bu: 'AAMG' },
+    '9005905': { name: 'รัฐพร ข', bu: '21RTG' },
+    '6604216': { name: 'ทดสอบ ตัวอย่าง', bu: 'CPDG' }
+  };
+
+  // ===========================================================
+  // Lookup member — ลอง Sheet ก่อน ถ้าไม่เจอ fallback MOCK
+  // ===========================================================
+  async function lookupMember(id) {
+    // 1) MOCK ก่อน (เร็ว + ทำงาน offline ได้)
+    if (MOCK_MEMBERS[id]) return MOCK_MEMBERS[id];
+    if (id.length >= 6) {
+      for (const key of Object.keys(MOCK_MEMBERS)) {
+        if (key.startsWith(id)) return MOCK_MEMBERS[key];
+      }
+    }
+    // 2) Fallback: ดึงจาก GAS (ถ้ามี memberLookup endpoint)
+    // (สำหรับ v2 ปัจจุบัน ข้าม — ใช้ MOCK จาก 3E3P- เดิม)
+    return null;
+  }
+
+  // ===========================================================
+  // Submit handler
+  // ===========================================================
+  const form = document.getElementById('toeForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const statusMsg = document.getElementById('statusMsg');
+
+  function showStatus(text, type) {
+    statusMsg.textContent = text;
+    statusMsg.className = 'status show ' + type;
+  }
+
+  function hideStatus() {
+    statusMsg.className = 'status';
+  }
+
+  function showToast(text) {
+    const t = document.getElementById('toast');
+    t.textContent = text;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // memberId → name/bu auto-fill
+  const memberIdEl = document.getElementById('memberId');
+  const memberNameEl = document.getElementById('memberName');
+  const memberBuEl = document.getElementById('memberBu');
+
+  let lookupTimer = null;
+  memberIdEl.addEventListener('input', () => {
+    const id = memberIdEl.value.trim();
+    memberNameEl.value = '';
+    memberBuEl.value = '';
+    memberNameEl.classList.remove('error');
+    memberBuEl.classList.remove('error');
+    memberNameEl.placeholder = 'กำลังค้นหา...';
+    memberBuEl.placeholder = 'กำลังค้นหา...';
+
+    clearTimeout(lookupTimer);
+    lookupTimer = setTimeout(async () => {
+      if (!id) {
+        memberNameEl.placeholder = 'จะดึงอัตโนมัติเมื่อกรอกรหัส';
+        memberBuEl.placeholder = 'จะดึงอัตโนมัติเมื่อกรอกรหัส';
+        return;
+      }
+      const m = await lookupMember(id);
+      if (m) {
+        memberNameEl.value = m.name;
+        memberBuEl.value = m.bu;
+        memberNameEl.placeholder = '';
+        memberBuEl.placeholder = '';
+      } else {
+        memberNameEl.value = '';
+        memberBuEl.value = '';
+        memberNameEl.placeholder = '⚠️ ไม่พบรหัสนี้ในระบบ';
+        memberBuEl.placeholder = '⚠️ ไม่พบรหัสนี้ในระบบ';
+        memberNameEl.classList.add('error');
+        memberBuEl.classList.add('error');
+      }
+    }, 350);
+  });
+
+  // submit
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    hideStatus();
+
+    const memberId = memberIdEl.value.trim();
+    const name = memberNameEl.value.trim();
+    const bu = memberBuEl.value.trim();
+    const direct = parseFloat(document.getElementById('directScore').value);
+    const indirect = parseFloat(document.getElementById('indirectScore').value);
+    const toe = parseFloat(document.getElementById('toeScore').value);
+
+    // validate
+    if (!/^[0-9]{7}$/.test(memberId)) {
+      showStatus('⚠️ รหัสสมาชิกต้องเป็นตัวเลข 7 หลัก', 'error');
+      memberIdEl.classList.add('error');
+      memberIdEl.focus();
+      return;
+    }
+    if (!name) {
+      showStatus('⚠️ ไม่พบชื่อสมาชิก — กรุณาตรวจสอบรหัส', 'error');
+      return;
+    }
+    if (isNaN(direct) || isNaN(indirect) || isNaN(toe)) {
+      showStatus('⚠️ กรุณากรอกคะแนนให้ครบ 3 ช่อง', 'error');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    showStatus('📤 กำลังบันทึกลง Sheet...', 'loading');
+
+    const payload = {
+      sheetId: SHEET_ID,
+      targetTab: TARGET_TAB,
+      memberId, name, bu,
+      directScore: direct,
+      indirectScore: indirect,
+      toeScore: toe,
+      timestamp: new Date().toISOString(),
+      source: 'toe-formula-v2'
+    };
+
+    try {
+      if (GAS_URL) {
+        await fetch(GAS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        console.log('✅ Sent to GAS:', payload);
+      }
+
+      // local echo (เผื่อต้อง verify ใน DevTools)
+      console.log('📋 Payload:', JSON.stringify(payload, null, 2));
+
+      showStatus('✅ บันทึกสำเร็จ! (' + name + ' · ' + bu + ')', 'success');
+      showToast('🎉 บันทึกเรียบร้อย');
+
+      // reset form (keep memberId for next entry)
+      document.getElementById('directScore').value = '';
+      document.getElementById('indirectScore').value = '';
+      document.getElementById('toeScore').value = '';
+      document.getElementById('directScore').focus();
+
+    } catch (err) {
+      console.error('❌ GAS error:', err);
+      showStatus('❌ ส่งไม่สำเร็จ: ' + err.message, 'error');
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  // expose for testing
+  window.__toe = { payload: () => ({ SHEET_ID, MEMBER_TAB, TARGET_TAB, GAS_URL, MOCK_COUNT: Object.keys(MOCK_MEMBERS).length }) };
+  console.log('🐻 ToE-Formula v2 ready. Try window.__toe');
+})();
+</script>
+</body>
+</html>
