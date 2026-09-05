@@ -1861,20 +1861,26 @@
       payload.chart_1_image = chart1Png;
       // (Chart #2 image ถูกนำออก - แสดงแค่ผลวิเคราะห์ ToE Score + Tier)
 
-      // ===== Send to Google Apps Script (GAS) =====
-      // TODO: Replace GAS_URL with the deployed Web App URL from script.google.com
-      const GAS_URL = 'https://script.google.com/macros/s/AKfycbyJWn2jYMyZbe6Amxr335YzG4gtfrnH4OBjp5SUs4gFb1ZASUc39lK3dm1Spj6gYgRq/exec';
+      // ===== Send to Google Apps Script (GAS) v6 =====
+      // Deploy URL: AKfycbxIP2xrWHik7oavMzjosOxiaQcwRJ2dw0AyIPlQ5h4D1sNob-mVaf3Jf7UxSmw7BMJS
+      // Updated: 5 ก.ย. 2569 - v6 clean (chart_1_image + toe_* support)
+      const GAS_URL = 'https://script.google.com/macros/s/AKfycbxIP2xrWHik7oavMzjosOxiaQcwRJ2dw0AyIPlQ5h4D1sNob-mVaf3Jf7UxSmw7BMJS/exec';
 
       if (GAS_URL !== 'YOUR_GAS_DEPLOY_URL_HERE') {
         try {
           console.log('📤 Sending to GAS...');
           const gasResponse = await fetch(GAS_URL, {
             method: 'POST',
-            mode: 'no-cors',
+            redirect: 'follow',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(payload)
           });
-          console.log('✅ Sent to GAS');
+          const result = await gasResponse.json().catch(() => ({}));
+          if (result.ok) {
+            console.log('✅ Saved to Sheet, row:', result.row);
+          } else {
+            console.warn('⚠️ GAS returned error:', result.error);
+          }
         } catch (err) {
           console.warn('⚠️ GAS send failed (data still captured locally):', err);
         }
